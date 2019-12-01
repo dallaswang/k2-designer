@@ -1,0 +1,120 @@
+.data-source-module {
+  display: flex;
+  padding: 10px 0;
+  .data-source-module-list {
+    flex: 1;
+    .data-source-module-breadcrumb {
+      padding: 10px;
+      border-bottom: 1px solid #e8e8e8;
+    }
+  }
+  .data-source-module-detail {
+    flex: 1;
+    overflow: hidden;
+  }
+  .data-source-module-info {
+    padding: 0 15px;
+  }
+  .data-source-module-ul {
+    padding: 10px;
+    list-style: none;
+    li {
+      display: flex;
+      margin: 4px;
+      align-items: center;
+      flex-direction: column;
+      overflow: hidden;
+      float: left;
+      width: 108px;
+      height: 100px;
+      padding: 12px 4px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      font-size: 14px;
+      cursor: pointer;
+      text-align: center;
+      word-break: break-all;
+      background: rgba(0, 0, 0, 0.1);
+      &.selected {
+        background-color: #f2f2f2;
+        .data-source-module-ul-icon,span {
+          color: #096dd9;
+        }
+      }
+      &:hover {
+        background: rgba(0,0,0,.04);
+      }
+      .data-source-module-ul-icon {
+        margin: 0 10px;
+        padding: 4px;
+        font-size: 28px;
+        color: #888888;
+      }
+      span {
+        display: block;
+        height: 44px;
+        overflow: hidden;
+      }
+    }
+  }
+  .module-result{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 10px 8px 10px;
+    line-height: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+    color: rgba(0,0,0,.38);
+  }
+  .ant-input-affix-wrapper {
+    height: 46px;
+    border-bottom: 1px solid #ddd;
+     .ant-input:not(:first-child) {
+      padding-left: 35px;
+      border: none;
+    }
+    .ant-input-prefix {
+      font-size: 20px;
+    }
+  }
+  .data-source-module-detail-box {
+    display: flex;
+    padding: 16px;
+    .data-source-module-ul-icon{
+      margin: 0 10px;
+      padding: 4px;
+      font-size: 40px;
+      color: #fff;
+      background: #888888;
+    }
+    .data-source-module-ul-text{
+      color: rgba(0,0,0,.87);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 24px;
+      padding-right: 3px;
+      cursor: pointer;
+    }
+    .data-source-module-ul-des {
+      color: rgba(0,0,0,.4);
+      font-size: 12px;
+      line-height: 16px;
+    }
+  }
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    color: rgba(0,0,0,.4);
+  }
+  .data-detail-list {
+    li {
+      padding: 10px 16px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}

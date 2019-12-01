@@ -1,0 +1,18 @@
+{
+  "/api": {
+    "target": "https://lab.azaas.com:51029",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": "/api"
+    }
+  },
+  "/odata": {
+    "target": "https://lab.azaas.com:51029",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/odata": "/odata"
+    }
+  }
+}

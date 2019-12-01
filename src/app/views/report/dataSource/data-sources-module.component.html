@@ -1,0 +1,47 @@
+<nz-modal nzClassName="data-source-modal-dialog" [(nzVisible)]="isVisible" nzWidth="720"  nzTitle="选择一个 DataSet..." nzOkText="选择 DataSet" (nzOnOk)="handleOk()" (nzOnCancel)="handleCancel()">
+  <div class="data-source-module">
+    <div class="data-source-module-list">
+      <div class="data-source-module-breadcrumb">
+        <nz-breadcrumb>
+          <nz-breadcrumb-item (click)="backDataSet();">
+            <a>
+              <i nz-icon nzType="home"></i>
+              <span>DataSet</span>
+            </a>
+          </nz-breadcrumb-item>
+          <nz-breadcrumb-item *ngFor="let item of breadcrumbItems;">
+            <a>
+              <i nz-icon nzType=""></i>
+              <span>{{item}}</span>
+            </a>
+          </nz-breadcrumb-item>
+        </nz-breadcrumb>
+      </div>
+<!--      <div>-->
+<!--        <nz-input-group [nzPrefix]="suffixIconSearch">-->
+<!--          <input type="text" nz-input placeholder="搜索 DataSet..." />-->
+<!--        </nz-input-group>-->
+<!--        <ng-template #suffixIconSearch>-->
+<!--          <i nz-icon nzType="search"></i>-->
+<!--        </ng-template>-->
+<!--      </div>-->
+<!--      <div class="module-result">2个搜索结果</div>-->
+      <div>
+        <div class="module-result" *ngIf="!isSelectedTable">共有{{moduleList.length}}个DataSet</div>
+        <ul class="data-source-module-ul" *ngIf="!isSelectedTable">
+          <li *ngFor="let item of moduleList;let i = index;" (click)="selectModule(item)">
+              <i class="data-source-module-ul-icon" nz-icon nzType="database" nzTheme="outline"></i>
+              <span>{{item.Name}}</span>
+          </li>
+        </ul>
+        <div class="module-result" *ngIf="isSelectedTable">共有{{tableList.length}}个Table</div>
+        <ul class="data-source-module-ul" *ngIf="isSelectedTable">
+          <li *ngFor="let item of tableList;let i = index;" [ngClass]="{'selected': item.name == selectedTable.name}" (click)="selectTable(item)">
+            <i class="data-source-module-ul-icon" nz-icon nzType="table" nzTheme="outline"></i>
+            <span>{{item.name}}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nz-modal>

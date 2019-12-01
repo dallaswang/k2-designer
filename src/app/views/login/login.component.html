@@ -1,0 +1,34 @@
+  <div class="sign-in-container">
+    <div class="sign-in-container-title">
+      <h1>Login to your account</h1>
+    </div>
+    <div class="sign-in-container-form">
+      <form nz-form name="loginForm" [formGroup]="validateForm" (ngSubmit)="submitForm()">
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Please input your email!">
+            <nz-input-group nzPrefixIcon="user">
+              <input type="text" nz-input formControlName="email" placeholder="email" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Please input your Password!">
+            <nz-input-group nzPrefixIcon="lock">
+              <input type="password" nz-input formControlName="password" placeholder="Password" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <label nz-checkbox formControlName="remember">
+              <span>Remember me</span>
+            </label>
+            <a class="login-form-forgot">Forgot password</a>
+          </nz-form-control>
+          <nz-form-control>
+            <button nz-button [nzType]="'primary'" [nzLoading]="isLoading" nzBlock>Sign in</button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
+  </div>

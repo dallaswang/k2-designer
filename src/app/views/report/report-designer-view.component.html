@@ -1,0 +1,51 @@
+<div class="report-designer-edit">
+  <div class="report-designer-chart">
+    <div *ngIf="chartType !='table'">
+      <nvd3 [options]="nvdOptions" [data]="nvdData"></nvd3>
+    </div>
+    <div *ngIf="chartType=='table'">
+      <nz-table #basicTable [nzData]="dataSet">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Address</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{data.name}}</td>
+          <td>{{data.age}}</td>
+          <td>{{data.address}}</td>
+          <td>
+            <a>Action 一 {{data.name}}</a>
+            <nz-divider nzType="vertical"></nz-divider>
+            <a>Delete</a>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+  <div class="report-designer-panel">
+    <div>
+      <div class="report-designer-panel-title">Chart Type</div>
+      <div class="report-designer-panel-chart-type">
+        <span class="report-designer-panel-chart-item" [ngClass]="{'selected': chartType =='bar'}" (click)="changeChart('bar')">
+          <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
+        </span>
+        <span class="report-designer-panel-chart-item" [ngClass]="{'selected': chartType =='pie'}" (click)="changeChart('pie')">
+          <i nz-icon nzType="pie-chart" nzTheme="outline"></i>
+        </span>
+        <span class="report-designer-panel-chart-item" [ngClass]="{'selected': chartType =='areaChart'}" (click)="changeChart('areaChart')">
+          <i nz-icon nzType="area-chart" nzTheme="outline"></i>
+        </span>
+        <span class="report-designer-panel-chart-item" [ngClass]="{'selected': chartType =='table'}" (click)="changeChart('table')">
+          <i nz-icon nzType="table" nzTheme="outline"></i>
+        </span>
+      </div>
+    </div>
+
+  </div>
+</div>

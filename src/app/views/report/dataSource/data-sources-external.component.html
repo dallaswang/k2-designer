@@ -1,0 +1,18 @@
+<nz-modal [(nzVisible)]="isVisible" nzTitle="选择一个 DataSet..." [nzFooter] ="null" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+  <div>
+    <a (click)="chooseDatayType('module')" class="chart-type existing-data text-color-light">
+      <div class="icon-container"><i></i></div>
+      <div>现有数据</div>
+      <p>选择您已上传或连接到系统的 DataSet</p>
+    </a>
+    <a (click)="chooseDatayType('external')" >
+      <div><i></i></div>
+      <div>外部数据</div>
+      <p>添加外部数据</p> </a>
+    <a (click)="chooseDatayType('upload')" >
+      <div><i></i></div>
+      <div>文件上传</div>
+      <p>以 Excel 或 CSV 格式上传计算机中的数据</p>
+    </a>
+  </div>
+</nz-modal>

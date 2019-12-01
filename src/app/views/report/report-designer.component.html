@@ -1,0 +1,189 @@
+<div class="k2-designer-container">
+  <div class="k2-designer-header">
+      <span class="k2-designer-header-item" [ngClass]="{'selected': reportDesigner.dataSet}" (click)="showItem('dataSet');">
+        <i nz-icon nzType="database" nzTheme="outline"></i>
+        <span class="k2-designer-header-item-text">DATA</span>
+      </span>
+      <span class="k2-designer-header-item selected" [ngClass]="{'selected': reportDesigner.dataTable}" (click)="showItem('dataTable');">
+        <i nz-icon nzType="table" nzTheme="outline"></i>
+        <span class="k2-designer-header-item-text">DATA TABLE</span>
+      </span>
+      <span class="k2-designer-header-item" [ngClass]="{'selected': reportDesigner.filter}" (click)="showItem('filter');">
+        <i nz-icon nzType="filter" nzTheme="outline"></i>
+        <span class="k2-designer-header-item-text">FILTER & SORT</span>
+      </span>
+      <span class="k2-designer-header-item" [ngClass]="{'selected': reportDesigner.chart}" (click)="showItem('chart');">
+        <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
+        <span class="k2-designer-header-item-text">CHART TYPES</span>
+      </span>
+  </div>
+  <div class="k2-designer-main" *ngIf="reportDesigner.designerMain || !reportDesigner.dataTable">
+    <div *ngIf="reportDesigner.dataSet" class="k2-designer-data" malihu-scrollbar  [scrollbarOptions]="scrollbarOptions">
+      <h6>DATA</h6>
+      <div>
+        <div class="k2-designer-data-box">
+          <i class="k2-designer-data-icon" nz-icon nzType="fork" nzTheme="outline"></i>
+          <div>
+            <div class="k2-designer-data-text">{{reportData.dataSetName}}</div>
+            <div class="k2-designer-data-des">DataFlow</div>
+          </div>
+        </div>
+        <nz-input-group [nzPrefix]="suffixIconSearch">
+          <input type="text" nz-input placeholder="FILTERS" name="char" [(ngModel)]="filterStr" />
+        </nz-input-group>
+        <ng-template #suffixIconSearch>
+          <i nz-icon nzType="search"></i>
+        </ng-template>
+        <nz-collapse>
+          <nz-collapse-panel
+            [nzHeader]="'DIMENSIONS'"
+            [nzActive] ="true"
+          >
+            <div class="k2-collapse-content">
+            <!--| filterChar: filterStr-->
+              <div *ngFor="let item of reportData.sizes" class="data-column-item-str" dnd-draggable [dragEnabled]="true" [dragData]="item">{{item.name}}</div>
+            </div>
+          </nz-collapse-panel>
+          <nz-collapse-panel
+            [nzHeader]="'MEASURES'"
+            [nzActive] ="true"
+          >
+            <div class="k2-collapse-content">
+              <div *ngFor="let item of reportData.measurements" class="data-column-item-num" dnd-draggable [dragEnabled]="true" [dragData]="item">{{item.name}}</div>
+            </div>
+          </nz-collapse-panel>
+        </nz-collapse>
+      </div>
+    </div>
+    <div *ngIf="reportDesigner.filter" class="k2-designer-screen" malihu-scrollbar  [scrollbarOptions]="scrollbarOptions">
+      <div class="k2-designer-filter">
+        <h6>FILTERS</h6>
+        <button nz-button nzType="default" nzBlock (click)="settingFilter($event)">Setting</button>
+      </div>
+      <div class="k2-designer-sort">
+        <h6>SORTING</h6>
+          <div dnd-droppable (onDropSuccess)="getDropSortItem($event)">
+
+
+            <div *ngFor="let item of reportData.sorts; let i = index;" [ngClass]="{'data-column-item-str': item.Otype == 'char', 'data-column-item-num': item.Otype =='number' }">
+              <div (click)="showSortDialog(item);"
+              >
+                <div
+                  nz-popover
+                  nzPopoverTitle=""
+                  [(nzVisible)]="sortVisible"
+                  (nzVisibleChange)="sortChange($event)"
+                  nzPopoverTrigger="click"
+                  [nzPopoverContent]="contentTemplate"></div>
+                  <ng-template #contentTemplate>
+                    <div class="sort-popover-container">
+                      <h4>Order</h4>
+                      <div class="sort-popover-radio">
+                        <nz-radio-group [(ngModel)]="currentSortItem.sort">
+                          <label nz-radio nzValue="asc">
+                            <i nz-icon nzType="sort-ascending" nzTheme="outline"></i>Ascending
+                          </label>
+                          <label nz-radio nzValue="desc">
+                            <i nz-icon nzType="sort-descending" nzTheme="outline"></i>Descending
+                          </label>
+                        </nz-radio-group>
+                      </div>
+                      <div class="sort-popover-button">
+                        <button nz-button nzType="default" (click)="closeSort('cancel')">取消</button>
+                        <button nz-button nzType="primary" (click)="closeSort('confirm')">应用</button>
+                      </div>
+                    </div>
+                  </ng-template>
+                {{item.name}}
+                <i class="report-designer-data-close" (click)="delSortsItem($event, i)" nz-icon nzType="close-circle" nzTheme="outline"></i>
+              </div>
+
+            </div>
+            <span class="report-designer-tooltip">Drag column here</span>
+        </div>
+      </div>
+      <div class="k2-designer-sort">
+        <h6>LIMIT ROWS</h6>
+        <nz-input-number [(ngModel)]="reportData.rows" [nzMin]="1" [nzMax]="100000000" [nzStep]="1" [nzSize]="'small'" ></nz-input-number>
+      </div>
+    </div>
+    <div class="k2-designer-chartView">
+      <div class="k2-designer-chart">
+        <div class="k2-designer-chart-layer">
+          <span class="k2-designer-chart-layer-item">
+            <label>X AXIS</label>
+            <span dnd-droppable (onDropSuccess)="getDropDemensionItem($event)">
+              <div [ngClass]="{'data-column-item-str': reportData.demensions.Otype == 'char', 'data-column-item-num': reportData.demensions.Otype =='number' }">
+                {{reportData.demensions.name}}
+                <i class="report-designer-data-close" (click)="delDemensions($event)" nz-icon nzType="close-circle" nzTheme="outline"></i>
+              </div>
+              <span *ngIf="!reportData.demensions.name" class="report-chart-tooltip">Drag column here</span>
+            </span>
+          </span>
+          <span class="k2-designer-chart-layer-item">
+            <label>Y AXIS</label>
+            <span dnd-droppable (onDropSuccess)="getDropMeasuresItem($event)">
+              <div [ngClass]="{'data-column-item-str': reportData.measures.Otype == 'char', 'data-column-item-num': reportData.measures.Otype =='number' }">
+                {{reportData.measures.name}}
+                <i class="report-designer-data-close" (click)="delMeasures($event)" nz-icon nzType="close-circle" nzTheme="outline"></i>
+              </div>
+              <span  *ngIf="!reportData.measures.name" class="report-chart-tooltip">Drag column here</span>
+            </span>
+          </span>
+        </div>
+        <div>
+          <app-chart [chartType]="reportDesigner.chartType"></app-chart>
+        </div>
+      </div>
+      <div *ngIf="reportDesigner.chart" class="k2-designer-chartType" malihu-scrollbar  [scrollbarOptions]="scrollbarOptions">
+        <h5>CHART TYPES</h5>
+        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'area'}" (click)="selectChart('area');">
+          <i nz-icon nzType="area-chart" nzTheme="outline"></i>
+          <span class="k2-designer-chart-text">area chart</span>
+        </div>
+        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'pie'}" (click)="selectChart('pie');">
+          <i nz-icon nzType="pie-chart" nzTheme="outline"></i>
+          <span class="k2-designer-chart-text">pie chart</span>
+        </div>
+        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'bar'}" (click)="selectChart('bar');">
+          <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
+          <span class="k2-designer-chart-text">bar chart</span>
+        </div>
+        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'line'}" (click)="selectChart('line');">
+          <i nz-icon nzType="line-chart" nzTheme="outline"></i>
+          <span class="k2-designer-chart-text">line chart</span>
+        </div>
+        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'dot'}" (click)="selectChart('dot');">
+          <i nz-icon nzType="dot-chart" nzTheme="outline"></i>
+          <span class="k2-designer-chart-text">dot chart</span>
+        </div>
+      </div>
+    </div>
+    <div></div>
+  </div>
+  <div class="k2-designer-footer" *ngIf="reportDesigner.dataTable">
+    <div class="k2-designer-table">
+      <div class="k2-designer-table-title">
+        <span class="k2-designer-table-text">DATA TABLE</span>
+        <div class="k2-designer-table-sed">
+          <span (click)="dialogVisible.column = true">Showing {{this.reportData.selectedColumn.length}} columns</span>
+          <i nz-icon nzType="setting" nzTheme="outline"></i>
+          <i nz-icon (click)="toggleTable();" nzType="arrows-alt" nzTheme="outline"></i>
+        </div>
+      </div>
+      <nz-table #basicTable [nzData]="dataSet">
+        <thead>
+        <tr>
+          <th *ngFor="let item of reportData.selectedColumn">{{item.name}}</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <th *ngFor="let item of reportData.selectedColumn">{{data[item.name]}}</th>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+<filter *ngIf="dialogVisible.filter" (closeEvent)="closeFilterDialog($event)"></filter>
+<show-columns *ngIf="dialogVisible.column"  (closeEvent)="closeColumnsDialog($event)"></show-columns>

@@ -1,0 +1,25 @@
+<div class="report-designer-side" [ngClass]="{'shrink': !isOpen}" >
+  <div class="report-designer-logo">
+    <img class="side-logo" src="assets/imgs/logo.svg" />
+    <span class="side-icon-box">
+        <img *ngIf="isOpen" (click)="isOpen =!isOpen" src="assets/imgs/icon-left.svg" class="side-icon"/>
+        <img *ngIf="!isOpen" (click)="isOpen =!isOpen" src="assets/imgs/icon-right.svg" class="side-icon"/>
+      </span>
+  </div>
+  <div class="report-designer-menu-box">
+    <ul class="report-designer-menu">
+      <li [routerLink]="'/designer/report/reportList'">
+        <i nz-icon nzType="calendar" nzTheme="outline"></i>
+        <span>Dashboards</span>
+      </li>
+      <li [routerLink]="'/designer/report/dataSources'">
+        <i nz-icon nzType="ant-cloud" nzTheme="outline"></i>
+        <span>Data Sources</span>
+      </li>
+      <li [routerLink]="'/designer/report/reportUser'">
+        <i nz-icon nzType="usergroup-add" nzTheme="outline"></i>
+        <span>Users</span>
+      </li>
+    </ul>
+  </div>
+</div>

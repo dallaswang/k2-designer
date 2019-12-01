@@ -1,0 +1,115 @@
+.report-query-builder {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -o-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  width: 100%
+}
+
+.report-query-builder .pull-right {
+  float: right!important
+}
+
+.report-query-builder .btn-group {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle
+}
+.report-query-builder .rule-container,.report-query-builder .rule-placeholder,.report-query-builder .rules-group-container {
+
+  position: relative;
+  margin: 4px 0;
+  border-radius: 5px;
+  padding: 5px;
+  border: 1px solid #eee;
+  background: rgba(255,255,255,.9)
+}
+
+.report-query-builder .rule-container .rule-filter-container,.report-query-builder .rule-container .rule-operator-container,.report-query-builder .rule-container .rule-value-container {
+  display: inline-block;
+  margin: 0 5px 0 0;
+  vertical-align: middle
+}
+
+.report-query-builder .rules-group-container {
+  padding: 10px;
+  padding-bottom: 6px;
+  border: 1px solid rgba(86,204,193,.3);
+  background: rgba(86,204,193,.15)
+}
+
+.report-query-builder .rules-group-header {
+  margin-bottom: 10px
+}
+
+.report-query-builder .rules-group-header .group-conditions .btn.readonly:not(.active),.report-query-builder .rules-group-header .group-conditions input[name$=_cond] {
+  display: none
+}
+
+.report-query-builder .rules-list {
+  list-style: none;
+  padding: 0 0 0 15px;
+  margin: 0
+}
+
+.report-query-builder .rule-value-container {
+  border-left: 1px solid #ddd;
+  padding-left: 5px
+}
+
+.report-query-builder .rule-value-container label {
+  margin-bottom: 0;
+  font-weight: 400
+}
+
+.report-query-builder .rule-value-container label.block {
+  display: block
+}
+
+.report-query-builder .rule-value-container select {
+  padding: 1px
+}
+
+.report-query-builder .rule-value-container input[type=number],.report-query-builder .rule-value-container input[type=text] {
+  padding: 1px
+}
+
+.report-query-builder .rules-list>::after,.report-query-builder .rules-list>::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  width: 10px;
+  height: calc(50% + 4px);
+  border-color: #ccc;
+  border-style: solid
+}
+
+.report-query-builder .rules-list>::before {
+  top: -4px;
+  border-width: 0 0 1px 1px
+}
+
+.report-query-builder .rules-list>::after {
+  top: 50%;
+  border-width: 0 0 0 1px
+}
+
+.report-query-builder .rules-list>:first-child::before {
+  top: -12px;
+  height: calc(50% + 14px)
+}
+
+.report-query-builder .rules-list>:last-child::before {
+  border-radius: 0 0 0 4px
+}
+
+.report-query-builder .rules-list>:last-child::after {
+  display: none
+}
+
+.report-query-builder .rules-group-header [data-invert] {
+  margin-left: 5px
+}
