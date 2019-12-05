@@ -16,7 +16,8 @@ export class DataSourcesModuleComponent implements OnInit {
   breadcrumbItems = [];
   selecteModule = {
     module: '',
-    table: ''
+    table: '',
+    data: []
   }
   constructor( private httpService: HttpService) { }
  
@@ -25,12 +26,15 @@ export class DataSourcesModuleComponent implements OnInit {
   }
   loadData() {
     this.httpService.get('/api/onedataservice/modules', {}).subscribe(result =>{
-      this.moduleList = result.Modules;
+      this.moduleList = result['Modules'];
       this.moduleList.forEach(item =>{
-        const tableList = OData.parseMetadata(item.Schema).dataServices.schema[0].entityType;
+        const schema = OData.parseMetadata(item.Schema).dataServices.schema;
+        const tableList = schema[0].entityType;
         item['tableList'] = tableList;
+        item['entityName'] = schema[schema.length-1].entityContainer[0].entitySet[0].name;
         delete item.Schema;
       });
+      this.selecteModule.data = this.moduleList;
     })
   }
   backDataSet() {

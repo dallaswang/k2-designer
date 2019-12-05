@@ -1,6 +1,6 @@
 <div class="page-header">
   <div class="page-header-container">
-    <div class="page-header-left">概览</div>
+    <div class="page-header-left">Overview</div>
     <div class="page-header-right">
       <span class="page-header-right-add" nz-dropdown [nzDropdownMenu]="menu">
         <i nz-icon nzType="plus" nzTheme="outline"></i>
@@ -9,7 +9,7 @@
         <ul nz-menu nzSelectable>
           <li nz-menu-item (click)="chooseDataDialogVisible = true;">
             <i nz-icon nzType="plus" nzTheme="outline"></i>
-            <span>创建新卡片</span>
+            <span>Create new Card</span>
           </li>
         </ul>
       </nz-dropdown-menu>
@@ -27,31 +27,10 @@
             <ul nz-menu nzSelectable>
               <li (click)="goEdit($event, 1);">
                 <i nz-icon nzType="edit" nzTheme="outline"></i>
-                <span>编辑chart</span>
+                <span>edit chart</span>
               </li>
             </ul>
           </nz-dropdown-menu>
-        </div>
-      </div>
-      
-    </div>
-  </div>
-  <div class="report-grid-item">
-    <div class="report-grid-item-inner">
-      <div class="report-grid-item-title">
-        <div class="report-grid-text">Coffees Brewed</div>
-        <div class="report-grid-edit">
-          <i nz-icon nzType="ellipsis" nzTheme="outline"></i>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="report-grid-item">
-    <div class="report-grid-item-inner">
-      <div class="report-grid-item-title">
-        <div class="report-grid-text">Office Guests</div>
-        <div class="report-grid-edit">
-          <i nz-icon nzType="ellipsis" nzTheme="outline"></i>
         </div>
       </div>
     </div>

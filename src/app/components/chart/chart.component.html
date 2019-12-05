@@ -1,1 +1,5 @@
 <nvd3 [options]="nvdOptions" [data]="nvdData"></nvd3>
+<div *ngIf="!nvdData" class="no-chart">
+  <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
+  <div class="no-chart-text">Select values to preview this chart with data</div>
+</div>

@@ -6,7 +6,7 @@ import { ChartComponent } from './chart/chart.component';
 
 @NgModule({
   declarations: [
-    ChartComponent
+    ChartComponent,
   ],
   imports: [
     CommonModule,
@@ -14,7 +14,7 @@ import { ChartComponent } from './chart/chart.component';
   ],
   exports: [
     CommonModule,
-    ChartComponent
+    ChartComponent,
   ]
 })
 export class CoreModule { }

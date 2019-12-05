@@ -4,6 +4,7 @@ import { LoginComponent } from './views/login/login.component';
 import { ReportHomeComponent } from './views/report/report-home/report-home.component';
 
 const routes: Routes = [
+  { path: '', redirectTo: '/designer/report/reportList', pathMatch: 'full'},
   { path: 'login', component: LoginComponent},
   {
     path: 'designer',

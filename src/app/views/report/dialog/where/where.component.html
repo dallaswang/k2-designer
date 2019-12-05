@@ -1,0 +1,99 @@
+<dl class="rules-group-container">
+  <dt class="rules-group-header">
+    <div class="btn-group pull-right group-actions">
+      <nz-button-group>
+        <button nz-button nzType="primary" nzSize="small" (click)="addRule(wherelists)">Add rule</button>
+        <button nz-button nzType="primary" nzSize="small" (click)="addGroup(wherelists)">Add group</button>
+        <button *ngIf="parent" nz-button  nzType="danger" nzSize="small" (click)="deleteGroup(parent, index)">Delete</button>
+      </nz-button-group>
+    </div>
+    <nz-radio-group [nzButtonStyle]="'solid'" [nzSize]="'small'" [(ngModel)]="wherelists.queryType" (ngModelChange)="changeQueryType()">
+      <label nz-radio-button nzValue="and">AND</label>
+      <label nz-radio-button nzValue="or">OR</label>
+    </nz-radio-group>
+  </dt>
+  <dd class="rules-group-body">
+    <ul class="rules-list">
+      <app-where *ngFor="let item of wherelists.group;let i = index;" [wherelists]="item" [parent]="wherelists" [index]="i"></app-where>
+      <li class="rule-container" *ngFor="let item of wherelists.children;let i = index;">
+        <div class="rule-header">
+          <div class="btn-group pull-right rule-actions">
+            <nz-button-group [nzSize]="'small'">
+              <button nz-button  nzType="danger" (click)="deleteRule(wherelists, i);">Delete</button>
+            </nz-button-group>
+          </div>
+        </div>
+        <div class="rule-filter-container">
+          <nz-select style="width: 190px;" [(ngModel)]="item.column" (ngModelChange)="changeColumn(item)">
+            <nz-option nzValue="" nzLabel="----"></nz-option>
+            <nz-option *ngFor="let item of this.columnService.columnData" [nzValue]="item.name" [nzLabel]="item.name"></nz-option>
+          </nz-select>
+        </div>
+        <div class="rule-operator-container" *ngIf="item.column">
+          <nz-select *ngIf="item.colunmType == 'int'" style="width: 220px;" [(ngModel)]="item.operator">
+            <nz-option nzValue="equals_string" nzLabel="equals"></nz-option>
+            <nz-option nzValue="not_equals_string" nzLabel="not equals"></nz-option>
+          </nz-select>
+          <nz-select *ngIf="item.colunmType == 'string'" style="width: 220px;" [(ngModel)]="item.operator">
+            <nz-option nzValue="equals" nzLabel="equals"></nz-option>
+            <nz-option nzValue="not-equals" nzLabel="not equals"></nz-option>
+            <nz-option nzValue="in" nzLabel="in (separated by ;)"></nz-option>
+            <nz-option nzValue="case-insensitive-equals" nzLabel="case-insensitive equals"></nz-option>
+            <nz-option nzValue="case-insensitive-not-equal" nzLabel="case-insensitive does not equal"></nz-option>
+            <nz-option nzValue="startswith" nzLabel="starts with"></nz-option>
+            <nz-option nzValue="startswith-false" nzLabel="does not start with"></nz-option>
+            <nz-option nzValue="endswith" nzLabel="ends with"></nz-option>
+            <nz-option nzValue="endswith-false" nzLabel="does not end with"></nz-option>
+            <nz-option nzValue="contains" nzLabel="contains"></nz-option>
+            <nz-option nzValue="length" nzLabel="has length"></nz-option>
+          </nz-select>
+          <nz-select style="width: 120px;" *ngIf="item.colunmType == 'date'" [(ngModel)]="item.operator">
+            <nz-option nzValue="date_equals_datetime" nzLabel="date equals">-->
+            </nz-option>
+            <nz-option nzValue="before_date_datetime" nzLabel="before date">
+            </nz-option>
+            <nz-option nzValue="after_date_datetime" nzLabel="after date">
+            </nz-option>
+            <nz-option nzValue="before_select" nzLabel="before">
+            </nz-option>
+            <nz-option nzValue="after_select" nzLabel="after">
+            </nz-option>
+            <nz-option nzValue="year_equals_int" nzLabel="year equals">
+            </nz-option>
+            <nz-option nzValue="month_number equals_int" nzLabel="month number equals">
+            </nz-option>
+            <nz-option nzValue="day_number equals_int" nzLabel="day number equals">
+            </nz-option>
+            <nz-option nzValue="hour_equals_int" nzLabel="hour equals">
+            </nz-option>
+            <nz-option nzValue="minute_equals_int" nzLabel="minute equals">
+            </nz-option>
+            <nz-option nzValue="second_equals_int" nzLabel="second equals">
+            </nz-option>
+          </nz-select>
+          <nz-select style="width: 120px;" *ngIf="item.colunmType == 'date' && (item.operator == 'before_select' || item.operator == 'after_select')">
+            <nz-option nzValue="0" nzLabel="now">
+            </nz-option>
+            <nz-option nzValue="1" nzLabel="yesterday">
+            </nz-option>
+            <nz-option nzValue="2" nzLabel=" a week ago">
+            </nz-option>
+            <nz-option nzValue="3" nzLabel="a month ago">
+            </nz-option>
+            <nz-option nzValue="4" nzLabel="tomorrow">
+            </nz-option>
+            <nz-option nzValue="5" nzLabel="next week">
+            </nz-option>
+            <nz-option nzValue="6" nzLabel="next month">
+            </nz-option>
+          </nz-select>
+        </div>
+        <div class="rule-value-container" *ngIf="item.column">
+          <input *ngIf="item.colunmType == 'string' || item.colunmType == 'int'"  nz-input placeholder="" nzSize="default" [(ngModel)]="item.value"/>
+          <nz-date-picker *ngIf="item.colunmType == 'date'" [(ngModel)]="item.value"></nz-date-picker>
+          <nz-input-number *ngIf="(item.colunmType == 'date' && item.operator == 'year_equals_int') || (item.colunmType == 'date' && item.operator == 'has_length_int')"  [(ngModel)]="item.value" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+        </div>
+      </li>
+    </ul>
+  </dd>
+</dl>

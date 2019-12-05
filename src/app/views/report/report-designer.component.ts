@@ -5,6 +5,7 @@ declare var OData;
 import buildQuery from 'odata-query';
 import { en_US, zh_CN, NzI18nService } from 'ng-zorro-antd/i18n';
 import { ColumnService } from './services/column.service';
+import { OdataQueryBuilderService } from './services/odata-query-builder.service';
 
 @Component({
   selector: 'report-designer',
@@ -14,30 +15,38 @@ import { ColumnService } from './services/column.service';
 })
 export class ReportDesignerComponent implements OnInit, OnChanges {
   dataSet;
+  chartSettingXY = {
+    x: 'X AXIS',
+    y: 'Y AXIS',
+  }
   currentSortItem: object = {
     sort: 'asc'
   };
+  measuresShow: false;
+  dmensionsShow: false;
   moduleList = [];
+  whereCondition: string;
   selectedTable = {
     property: []
   };
   dialogVisible = {
-    filter: true,
+    filter: false,
     column: false
   };
 
   selecteModule = {
     module: '',
-    table: ''
+    table: '',
+    data: []
   };
   Url: string = '';
   entityName: string = '';
   reportDesigner = {
     dataSet: true,
     dataTable: true,
-    filter: false,
+    filter: true,
     sort: false,
-    chart: false,
+    chart: true,
     designerMain: true,
     chartType: ''
   }
@@ -51,7 +60,7 @@ export class ReportDesignerComponent implements OnInit, OnChanges {
     demensions: {},
     measures: {},
     selectedColumn: [],
-    rows: 0
+    rows: 10
   }
 
   filterStr: string = '';
@@ -59,11 +68,11 @@ export class ReportDesignerComponent implements OnInit, OnChanges {
 
   public scrollbarOptions = { axis: 'y', theme: 'minimal-dark' };
 
-  constructor(public http: HttpClient, public httpService: HttpService, private i18n: NzI18nService, private columnService: ColumnService) { }
+  constructor(public http: HttpClient, public httpService: HttpService, private i18n: NzI18nService, private columnService: ColumnService, private odataQueryBuilderService: OdataQueryBuilderService) { }
 
   ngOnInit() {
     this.i18n.setLocale(en_US);
-
+    this.odataQueryBuilderService.queryBuilder([]);
     this.loadData();
   }
 
@@ -87,20 +96,17 @@ export class ReportDesignerComponent implements OnInit, OnChanges {
   }
   // 加载module模块
   loadData() {
-    const filter = { "startswith(PropName, 'foo')": { eq: true }};
-    console.log(buildQuery({ filter }));
     this.selecteModule = JSON.parse(localStorage.getItem('selecteModule'));
-
-    this.httpService.get('/api/onedataservice/modules', {}).subscribe(result =>{
-      this.moduleList = result.Modules;
-
-      this.moduleList.forEach(item =>{
-        const schema = OData.parseMetadata(item.Schema).dataServices.schema;
-        const tableList = schema[0].entityType;
-        item['tableList'] = tableList;
-        item['entityName'] = schema[schema.length-1].entityContainer[0].entitySet[0].name
-        delete item.Schema;
-      });
+    this.moduleList = this.selecteModule.data;
+    // this.httpService.get('/api/onedataservice/modules', {}).subscribe(result =>{
+    //   this.moduleList = result.Modules;
+    //   this.moduleList.forEach(item =>{
+    //     const schema = OData.parseMetadata(item.Schema).dataServices.schema;
+    //     const tableList = schema[0].entityType;
+    //     item['tableList'] = tableList;
+    //     item['entityName'] = schema[schema.length-1].entityContainer[0].entitySet[0].name;
+    //     delete item.Schema;
+    //   });
 
       this.moduleList.filter(item =>{
         if (this.selecteModule.module == item.Name) {
@@ -115,26 +121,30 @@ export class ReportDesignerComponent implements OnInit, OnChanges {
       })
       this.filterData();
       this.getData();
-    })
+    // })
   }
 
   // 查询数据
   getData() {
-    let module = this.selecteModule.module.toLowerCase();
-    let url = `/${this.Url}/${this.entityName}?$top=100`;
-    // reportData.sorts
-    // reportData.rows
-    // this.columnService.columnData
-    console.log(this.reportData.sorts);
-    console.log(this.reportData.rows);
-    console.log(this.columnService.columnData);
+    let url = `/${this.Url}/${this.entityName}`;
+    let top = this.reportData.rows;
+    let orderBy = this.odataQueryBuilderService.getSorts(this.reportData.sorts);
+    let select  = this.odataQueryBuilderService.joinColumn(this.reportData.selectedColumn);
+    const filter = this.whereCondition;
 
-    this.httpService.get(url, {}).subscribe(result =>{
-      console.log(result);
-      this.dataSet = result.value;
+    if(select.length == 0) {
+      select = null;
+    }
+    if(orderBy.length == 0) {
+      orderBy = null;
+    }
+    url = url +  buildQuery({ top, orderBy, filter, select });
+
+    this.httpService.get(url, {}).subscribe((result: any) =>{
+      this.dataSet = result['value'];
     });
   }
-  // 获取所有的字段
+  // 获取所有选中的字段
   getColumns() {
     this.reportData.selectedColumn = [];
      this.columnService.columnData.filter(item =>{
@@ -155,15 +165,59 @@ export class ReportDesignerComponent implements OnInit, OnChanges {
   // 选中哪个chart
   selectChart(type) {
     this.reportDesigner.chartType = type;
+    switch (type) {
+      case 'pieChart':
+      case 'donutPieChart':
+        this.chartSettingXY.x = 'PIE NAME';
+        this.chartSettingXY.y = 'PIE VALUE';
+        break;
+      default:
+        this.chartSettingXY.x = 'X AXIS';
+        this.chartSettingXY.y = 'Y AXIS';
+        break;
+    }
   }
-
+  // 设置或取消选中字段
+  setSelectColumn(name, dragName, existenceName) {
+    this.columnService.columnData.forEach(item =>{
+      if (item.name == name && existenceName !== name ) {
+        item.selected = false;
+        item.disabled = false;
+      }
+      if (item.name == dragName) {
+        item.selected = true;
+        item.disabled = true;
+      }
+    });
+  }
+  // 拖动成功回调
   getDropDemensionItem($event) {
+    let name = this.reportData.demensions.name;
+    this.reportData.demensions = {};
+    this.setSelectColumn(name, $event.dragData.name, this.reportData.measures.name);
     this.reportData.demensions = $event.dragData;
-  }
-  getDropMeasuresItem($event) {
-    this.reportData.measures = $event.dragData;
+    this.getColumns();
+    this.getData();
   }
 
+  // 拖动成功回调
+  getDropMeasuresItem($event) {
+    let name = this.reportData.measures.name;
+    this.reportData.measures = {};
+    this.setSelectColumn(name, $event.dragData.name, this.reportData.demensions.name);
+    this.reportData.measures = $event.dragData;
+
+    if ( this.reportData.measures.Otype != 'number') {
+      this.reportData.measures.op = 'count';
+    }
+    this.getColumns();
+    this.getData();
+  }
+
+  // 切换统计方式回调
+  changeCalc() {
+    this.getData();
+  }
   // 点开设置弹窗
   settingFilter() {
     this.dialogVisible.filter = true;
@@ -208,17 +262,27 @@ export class ReportDesignerComponent implements OnInit, OnChanges {
 
   // 删除x轴
   delDemensions($event) {
+    this.setSelectColumn(this.reportData.demensions.name, null, '');
     this.reportData.demensions = {};
+    this.getColumns();
+    this.getData();
   }
 
   // 删除y轴
   delMeasures($event) {
+    this.setSelectColumn(this.reportData.measures.name, null, '');
     this.reportData.measures = {};
+    this.getColumns();
+    this.getData();
   }
 
   // 筛选弹窗关闭
   closeFilterDialog($event) {
     this.dialogVisible.filter = false;
+    if($event){
+      this.whereCondition = this.odataQueryBuilderService.queryBuilder($event);
+      this.getData();
+    }
   }
 
   // columns弹窗关闭

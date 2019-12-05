@@ -6,14 +6,14 @@ import { ConfigService } from './service.config';
   providedIn: 'root'
 })
 export class HttpService {
-
+  isLoading: boolean = false;
   constructor(private http: HttpClient, private configService: ConfigService) { }
 
   get<T>(url: string, params: {}): Observable<T> {
     const headers: HttpHeaders = new HttpHeaders();
-    const token = localStorage.getItem('auth');
+    const token = localStorage.getItem('token');
     headers.append('Content-type', 'application/x-www-form-urlencoded; charset=utf-8');
-    headers.append('Authorization', 'Bearer ' + token);
+    // headers.append('Authorization', 'Bearer ' + token);
 
     url = this.configService.baseUrl + url;
     return this.http.get<T>(url, {
@@ -24,7 +24,7 @@ export class HttpService {
 
   post<T>(url: string, params: {}): Observable<T> {
     const headers: HttpHeaders = new HttpHeaders();
-    const token = localStorage.getItem('auth');
+    const token = localStorage.getItem('auth-token');
     headers.append('Content-type', 'application/x-www-form-urlencoded; charset=utf-8');
     headers.append('Authorization', 'Bearer ' + token);
     url = this.configService.baseUrl + url;

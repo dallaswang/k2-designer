@@ -16,6 +16,7 @@ import { DataSourcesModuleComponent } from './dataSource/data-sources-module.com
 import { FilterComponent } from './dialog/filter.component';
 import { FilterColumnPipe } from './pipes/column.pipe';
 import { ShowColumnsComponent } from './dialog/show-columns.component';
+import { WhereComponent } from './dialog/where/where.component';
 @NgModule({
   declarations: [
     ReportListComponent,
@@ -28,6 +29,7 @@ import { ShowColumnsComponent } from './dialog/show-columns.component';
     DataSourcesModuleComponent,
     FilterComponent,
     ShowColumnsComponent,
+    WhereComponent,
     FilterColumnPipe
   ],
   imports: [

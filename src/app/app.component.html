@@ -1,1 +1,6 @@
 <router-outlet></router-outlet>
+<div class="loading-container" *ngIf="httpService.isLoading">
+  <div class="loading-content">
+    <i nz-icon nzType="loading" nzTheme="outline"></i>
+  </div>
+</div>

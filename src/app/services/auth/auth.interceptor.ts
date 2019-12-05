@@ -157,7 +157,8 @@ export class AuthInterceptor implements HttpInterceptor {
     );
 
     return authService.getAccessToken().pipe(
-      map((token: string) => {
+      map(() => {
+        const token = localStorage.getItem('auth-token');
         if (token) {
           return req.clone({
             setHeaders: { Authorization: `Bearer ${token}` }

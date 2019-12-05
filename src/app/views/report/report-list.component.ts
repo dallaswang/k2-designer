@@ -28,9 +28,10 @@ export class ReportListComponent implements OnInit {
     }
   }
   dataModuleDialogClose($event) {
-    console.log($event);
     this.dataModuleDialogVisible = false;
-    this.router.navigate(['/designer/report/reportDesigner', 'new']);
+    if ($event) {
+      this.router.navigate(['/designer/report/reportDesigner', 'new']);
+    }
   }
   dataExternalDialogClose($event) {
     console.log($event);
