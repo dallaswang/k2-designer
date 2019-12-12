@@ -177,6 +177,7 @@ export class ReportDesignerComponent implements OnInit, OnChanges {
     sortVisible: false,
     measuresVisible: false,
     demensionsVisible: false,
+    export: false
   };
 
   selectedModule = {
@@ -184,7 +185,10 @@ export class ReportDesignerComponent implements OnInit, OnChanges {
     table: '',
     data: []
   };
-
+  exportConfig = {
+    'Title': '',
+    'type': ''
+  }
   reportDesigner = {
     dataSet: true,
     dataTable: false,
@@ -226,8 +230,6 @@ export class ReportDesignerComponent implements OnInit, OnChanges {
 }
 
   ngOnInit() {
-    console.log(this.serviceConfig.baseUrl);
-    // window.open('https://lab.azaas.com:51024/odata/outcome/JobseekerInterviewOutcomes/oexport?$top=10000000&$format=pdf&filename=daad', '_blank')
     this.i18n.setLocale(en_US);
     this.odataQueryBuilderService.queryBuilder([]);
   }
@@ -425,6 +427,14 @@ export class ReportDesignerComponent implements OnInit, OnChanges {
     this.dialogVisible.column = false;
   }
 
+  // export弹窗关闭
+  closeExportDialog($event) {
+    this.dialogVisible.export = false;
+    if ($event) {
+      this.exportConfig.Title = $event;
+      this.exportReport();
+    }
+  }
   // 获取页面配置
   getSetting(id) {
     this.httpService.get('/api/onedataservice/reportdesigner/get', {id: id}).subscribe(result => {
@@ -460,8 +470,25 @@ export class ReportDesignerComponent implements OnInit, OnChanges {
       this.message.create('success', `Update Successfully`);
     });
   }
+
+  // 打开报表弹窗
+  opendExportDialog(type) {
+    this.dialogVisible.export = true;
+    this.exportConfig.type = type;
+  }
   // 导出报表
-  exportReport(type) {}
+  exportReport() {
+    let url = '';
+    let exportUrl = '';
+    if (this.reportData.url) {
+      url =   this.serviceConfig.baseUrl + this.reportData.url;
+      url = url.replace(new RegExp(/(\$count=\w+&?)/), '');
+      url = url.replace(new RegExp(/(\$top=\d+)/), '$top=10000000');
+      var parts = url.split('?');
+      exportUrl = parts[0] + '/oexport?' + parts[1] + "&$format=" + this.exportConfig.type + "&filename=" + encodeURIComponent(this.exportConfig.Title);
+    }
+    window.open(exportUrl, '_blank');
+  }
 
   ngOnChanges() {
   }

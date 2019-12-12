@@ -13,9 +13,9 @@
         </button>
         <nz-dropdown-menu #export="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item (click)="exportReport('pdf')">export as PDF</li>
-            <li nz-menu-item (click)="exportReport('xlsx')">export as Excel</li>
-            <li nz-menu-item (click)="exportReport('csv')">export as CSV</li>
+            <li nz-menu-item (click)="opendExportDialog('pdf')">export as PDF</li>
+            <li nz-menu-item (click)="opendExportDialog('xlsx')">export as Excel</li>
+            <li nz-menu-item (click)="opendExportDialog('csv')">export as CSV</li>
           </ul>
         </nz-dropdown-menu>
       </div>
@@ -450,4 +450,5 @@
   </div>
 </div>
 <filter *ngIf="dialogVisible.filter" [whereCondition]="whereConditionMap" (closeEvent)="closeFilterDialog($event)"></filter>
-<show-columns *ngIf="dialogVisible.column"  (closeEvent)="closeColumnsDialog($event)"></show-columns>
+<show-columns *ngIf="dialogVisible.column" (closeEvent)="closeColumnsDialog($event)"></show-columns>
+<export-file *ngIf="dialogVisible.export" (closeEvent)="closeExportDialog($event)"></export-file>

@@ -16,6 +16,7 @@ import { FilterColumnPipe } from './pipes/column.pipe';
 import {FilterCharPipe} from './pipes/char.pipe';
 import { ShowColumnsComponent } from './dialog/show-columns.component';
 import { WhereComponent } from './dialog/where.component';
+import { ExportComponent } from './dialog/export.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { WhereComponent } from './dialog/where.component';
     FilterComponent,
     ShowColumnsComponent,
     WhereComponent,
+    ExportComponent,
     FilterCharPipe,
     FilterColumnPipe
   ],
