@@ -1,20 +1,49 @@
 <div class="k2-designer-container">
-  <div class="k2-designer-header">
-      <span class="k2-designer-header-item" [ngClass]="{'selected': reportDesigner.dataSet}" (click)="showItem('dataSet');">
-        <i nz-icon nzType="database" nzTheme="outline"></i>
-        <span class="k2-designer-header-item-text">DATA</span>
-      </span>
-      <span class="k2-designer-header-item selected" [ngClass]="{'selected': reportDesigner.dataTable}" (click)="showItem('dataTable');">
-        <i nz-icon nzType="table" nzTheme="outline"></i>
-        <span class="k2-designer-header-item-text">DATA TABLE</span>
-      </span>
-      <span class="k2-designer-header-item" [ngClass]="{'selected': reportDesigner.filter}" (click)="showItem('filter');">
-        <i nz-icon nzType="filter" nzTheme="outline"></i>
-        <span class="k2-designer-header-item-text">FILTER & SORT</span>
-      </span>
-      <span class="k2-designer-header-item" [ngClass]="{'selected': reportDesigner.chart}" (click)="showItem('chart');">
-        <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
-        <span class="k2-designer-header-item-text">CHART TYPES</span>
+  <div class="k2-designer-containe-top">
+    <div class="k2-designer-button-container">
+      <div class="left">
+        <input nz-input placeholder="Enter a Title(required)" [(ngModel)]="reportData.reportTitle" />
+      </div>
+      <div>
+        <button *ngIf="!pageId" [disabled]="!reportData.reportTitle" nz-button nzType="primary" (click)="save();">SAVE</button>
+        <button *ngIf="pageId" [disabled]="!reportData.reportTitle" nz-button nzType="primary" (click)="update();">UPDATE</button>
+        <button class="btn-export" nz-button nz-dropdown [nzDropdownMenu]="export">
+          EXPORT
+          <i nz-icon nzType="down"></i>
+        </button>
+        <nz-dropdown-menu #export="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item (click)="exportReport('pdf')">export as PDF</li>
+            <li nz-menu-item (click)="exportReport('xlsx')">export as Excel</li>
+            <li nz-menu-item (click)="exportReport('csv')">export as CSV</li>
+          </ul>
+        </nz-dropdown-menu>
+      </div>
+    </div>
+    <div class="k2-designer-header" *ngIf="designerHeaderShow">
+        <span class="k2-designer-header-item" [ngClass]="{'selected': reportDesigner.dataSet}" (click)="showItem('dataSet');">
+          <i nz-icon nzType="database" nzTheme="outline"></i>
+          <span class="k2-designer-header-item-text">DATA</span>
+        </span>
+        <span class="k2-designer-header-item selected" [ngClass]="{'selected': reportDesigner.dataTable}" (click)="showItem('dataTable');">
+          <i nz-icon nzType="table" nzTheme="outline"></i>
+          <span class="k2-designer-header-item-text">DATA TABLE</span>
+        </span>
+        <span class="k2-designer-header-item" [ngClass]="{'selected': reportDesigner.filter}" (click)="showItem('filter');">
+          <i nz-icon nzType="filter" nzTheme="outline"></i>
+          <span class="k2-designer-header-item-text">FILTER & SORT</span>
+        </span>
+        <span class="k2-designer-header-item" [ngClass]="{'selected': reportDesigner.properties}" (click)="showItem('properties');">
+          <i nz-icon nzType="compass" nzTheme="outline"></i>
+          <span class="k2-designer-header-item-text">PROPERTIES</span>
+        </span>
+        <span class="k2-designer-header-item" [ngClass]="{'selected': reportDesigner.chart}" (click)="showItem('chart');">
+          <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
+          <span class="k2-designer-header-item-text">CHART TYPES</span>
+        </span>
+    </div>
+    <span class="k2-designer-header-opera">
+      <i [ngClass]="{'hidden': !designerHeaderShow }" (click)="toggleHeader($event);" nz-icon nzType="up-circle" nzTheme="outline"></i>
       </span>
   </div>
   <div class="k2-designer-main" *ngIf="reportDesigner.designerMain || !reportDesigner.dataTable">
@@ -22,7 +51,7 @@
       <h6>DATA</h6>
       <div>
         <div class="k2-designer-data-box">
-          <i class="k2-designer-data-icon" nz-icon nzType="fork" nzTheme="outline"></i>
+          <i class="k2-designer-data-icon" nz-icon nzType="ordered-list" nzTheme="outline"></i>
           <div>
             <div class="k2-designer-data-text">{{reportData.dataSetName}}</div>
             <div class="k2-designer-data-des">DataFlow</div>
@@ -41,7 +70,10 @@
           >
             <div class="k2-collapse-content">
             <!--| filterChar: filterStr-->
-              <div *ngFor="let item of reportData.sizes" class="data-column-item-str" dnd-draggable [dragEnabled]="true" [dragData]="item">{{item.name}}</div>
+              <div *ngFor="let item of reportData.sizes | filterChar: filterStr" class="data-column-item-str" dnd-draggable [dragEnabled]="true" [dragData]="item">
+                <i class="icon iconfont {{item.icon}}"></i>
+                {{item.name}}
+            </div>
             </div>
           </nz-collapse-panel>
           <nz-collapse-panel
@@ -49,201 +81,348 @@
             [nzActive] ="true"
           >
             <div class="k2-collapse-content">
-              <div *ngFor="let item of reportData.measurements" class="data-column-item-num" dnd-draggable [dragEnabled]="true" [dragData]="item">{{item.name}}</div>
+              <div *ngFor="let item of reportData.measurements | filterChar: filterStr" class="data-column-item-num" dnd-draggable [dragEnabled]="true" [dragData]="item">
+                <i class="icon iconfont {{item.icon}}"></i>{{item.name}}</div>
             </div>
           </nz-collapse-panel>
         </nz-collapse>
       </div>
     </div>
-    <div *ngIf="reportDesigner.filter" class="k2-designer-screen" malihu-scrollbar  [scrollbarOptions]="scrollbarOptions">
-      <div class="k2-designer-filter">
-        <h6>FILTERS</h6>
-        <button nz-button nzType="default" nzBlock (click)="settingFilter($event)">Setting</button>
-      </div>
-      <div class="k2-designer-sort">
-        <h6>SORTING</h6>
-          <div dnd-droppable (onDropSuccess)="getDropSortItem($event)">
-
-
-            <div *ngFor="let item of reportData.sorts; let i = index;" [ngClass]="{'data-column-item-str': item.Otype == 'char', 'data-column-item-num': item.Otype =='number' }">
-              <div (click)="showSortDialog(item);"
-              >
-                <div
-                  nz-popover
-                  nzPopoverTitle=""
-                  [(nzVisible)]="sortVisible"
-                  (nzVisibleChange)="sortChange($event)"
-                  nzPopoverTrigger="click"
-                  [nzPopoverContent]="contentTemplate"></div>
-                  <ng-template #contentTemplate>
-                    <div class="sort-popover-container">
-                      <h4>Order</h4>
-                      <div class="sort-popover-radio">
-                        <nz-radio-group [(ngModel)]="currentSortItem.sort">
-                          <label nz-radio nzValue="asc">
-                            <i nz-icon nzType="sort-ascending" nzTheme="outline"></i>Ascending
-                          </label>
-                          <label nz-radio nzValue="desc">
-                            <i nz-icon nzType="sort-descending" nzTheme="outline"></i>Descending
-                          </label>
-                        </nz-radio-group>
-                      </div>
-                      <div class="sort-popover-button">
-                        <button nz-button nzType="default" (click)="closeSort('cancel')">取消</button>
-                        <button nz-button nzType="primary" (click)="closeSort('confirm')">应用</button>
-                      </div>
-                    </div>
-                  </ng-template>
-                {{item.name}}
-                <i class="report-designer-data-close" (click)="delSortsItem($event, i)" nz-icon nzType="close-circle" nzTheme="outline"></i>
-              </div>
-
-            </div>
-            <span class="report-designer-tooltip">Drag column here</span>
+    <div *ngIf="reportDesigner.filter || reportDesigner.properties" class="k2-designer-screen" malihu-scrollbar  [scrollbarOptions]="scrollbarOptions">
+      <div *ngIf="reportDesigner.filter">
+        <div class="k2-designer-filter">
+          <h6>FILTERS</h6>
+          <button nz-button nzType="default" nzBlock (click)="settingFilter($event)">Setting</button>
         </div>
-      </div>
-      <div class="k2-designer-sort">
+        <div class="k2-designer-sort">
+          <h6>SORTING</h6>
+            <div dnd-droppable (onDropSuccess)="getDropSortItem($event)">
+              <div *ngFor="let item of reportData.sorts; let i = index;" [ngClass]="{'data-column-item-str': item.Otype == 'char' || item.Otype == 'date', 'data-column-item-num': item.Otype =='number' }">
+                <div (click)="showSortDialog(item);">
+                  <div
+                    nz-popover
+                    nzPopoverTitle=""
+                    [(nzVisible)]="dialogVisible.sortVisible"
+                    (nzVisibleChange)="sortChange($event)"
+                    nzPopoverTrigger="click"
+                    [nzPopoverContent]="contentTemplate"></div>
+                    <ng-template #contentTemplate>
+                      <div class="sort-popover-container">
+                        <h4>Order</h4>
+                        <div class="sort-popover-radio">
+                          <nz-radio-group [(ngModel)]="currentSortItem.sort">
+                            <label nz-radio nzValue="asc">
+                              <i nz-icon nzType="sort-ascending" nzTheme="outline"></i>Ascending
+                            </label>
+                            <label nz-radio nzValue="desc">
+                              <i nz-icon nzType="sort-descending" nzTheme="outline"></i>Descending
+                            </label>
+                          </nz-radio-group>
+                        </div>
+                        <div class="sort-popover-button">
+                          <button nz-button nzType="default" (click)="closeSort('cancel')">取消</button>
+                          <button nz-button nzType="primary" (click)="closeSort('confirm')">应用</button>
+                        </div>
+                      </div>
+                    </ng-template>
+                  <i class="icon iconfont {{item.icon}}"></i>{{item.name}}
+                  <i class="report-designer-data-close" (click)="delSortsItem($event, i)" nz-icon nzType="close-circle" nzTheme="outline"></i>
+                </div>
+
+              </div>
+              <span class="report-designer-tooltip">Drag column here</span>
+          </div>
+        </div>
+        <div class="k2-designer-sort">
         <h6>LIMIT ROWS</h6>
         <nz-input-number [(ngModel)]="reportData.rows" [nzMin]="1" (ngModelChange)="getData();" [nzMax]="100000000" [nzStep]="1" [nzSize]="'small'" ></nz-input-number>
+      </div>
+      </div>
+      <div *ngIf="reportDesigner.properties" class="k2-designer-sort">
+        <h5>CHART PROPERTIES</h5>
+        <div>
+          <nz-form-item>
+            <nz-form-label [nzSm]="8">HEIGHT</nz-form-label>
+            <nz-form-control [nzSm]="16">
+              <input nz-input [(ngModel)]="reportData.chart.height" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
       </div>
     </div>
     <div class="k2-designer-chartView">
       <div class="k2-designer-chart">
-        <div class="k2-designer-chart-layer">
-          <span class="k2-designer-chart-layer-item">
-            <label>{{chartSettingXY.x}}</label>
-            <span dnd-droppable (onDropSuccess)="getDropDemensionItem($event)" nz-dropdown  nzTrigger="click" [nzVisible]="dmensionsShow"  [nzDropdownMenu]="demensions">
-              <div [ngClass]="{'data-column-item-str': reportData.demensions.Otype == 'char', 'data-column-item-num': reportData.demensions.Otype =='number' }">
-                {{reportData.demensions.name}}
-<!--                <i (click)="delDemensions($event)" nz-icon nzType="close-circle" nzTheme="outline"></i>-->
-                <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
-                <nz-dropdown-menu #demensions="nzDropdownMenu">
-                  <div nz-menu nzSelectable>
-                    <div class="measures-pop-container">
-                      <div class="measures-pop-content">
-                      </div>
-                      <div class="measures-pop-footer">
-                        <span class="measures-pop-button" (click)="delDemensions($event);dmensionsShow= false;">
-                          <i nz-icon nzType="delete" nzTheme="outline"></i> Remove
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </nz-dropdown-menu>
-              </div>
-              <span *ngIf="!reportData.demensions.name" class="report-chart-tooltip">Drag column here</span>
-            </span>
-          </span>
-          <span class="k2-designer-chart-layer-item">
-            <label>{{chartSettingXY.y}}</label>
-            <span dnd-droppable (onDropSuccess)="getDropMeasuresItem($event)" nzTrigger="click" [nzVisible]="measuresShow" nz-dropdown [nzDropdownMenu]="measures">
-              <div [ngClass]="{'data-column-item-str': reportData.measures.Otype == 'char', 'data-column-item-num': reportData.measures.Otype =='number' }">
-                {{reportData.measures.name}}
-<!--                <i class="report-designer-data-close" (click)="delMeasures($event)" nz-icon nzType="close-circle" nzTheme="outline"></i>-->
-                <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
-                <nz-dropdown-menu #measures="nzDropdownMenu">
-                  <div nz-menu nzSelectable>
-                    <div class="measures-pop-container">
-                      <div class="measures-pop-content">
-                        <label>Calculation</label>
-                        <nz-select style="width: 220px;" [(ngModel)]="reportData.measures.op" (ngModelChange) ="changeCalc();">
-                          <nz-option nzValue="count" nzLabel="Count"></nz-option>
-                          <nz-option nzValue="null" nzLabel="No aggregation"></nz-option>
-                        </nz-select>
-                      </div>
-                      <div class="measures-pop-footer">
-                        <span class="measures-pop-button" (click)="delMeasures($event);measuresShow= false;">
-                          <i nz-icon nzType="delete" nzTheme="outline"></i> Remove
-                        </span>
+          <div class="k2-designer-chart-layer" *ngIf="reportData.chartType !== 'candlestickBarChart' && reportData.chartType !== 'ohlcBarChart' && reportData.chartType !== 'sunburstChart' && reportData.chartType !== 'bulletChart'">
+            <span class="k2-designer-chart-layer-item">
+              <label>{{chartSettingXY.x}}</label>
+              <span dnd-droppable (onDropSuccess)="getDropMeasures($event, 0)" nz-dropdown  nzTrigger="click" [nzVisible]="dialogVisible.demensionsVisible"  [nzDropdownMenu]="demensions">
+                <div [ngClass]="{'data-column-item-str': reportData.designArr[0].Otype == 'char' || reportData.designArr[0].Otype == 'date', 'data-column-item-num': reportData.designArr[0].Otype =='number' }">
+                  <i class="icon iconfont {{reportData.designArr[0].icon}}"></i>{{reportData.designArr[0].name}}
+                  <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
+                  <nz-dropdown-menu #demensions="nzDropdownMenu">
+                    <div nz-menu nzSelectable>
+                      <div class="measures-pop-container">
+                        <div class="measures-pop-content">
+                        </div>
+                        <div class="measures-pop-footer">
+                          <span class="measures-pop-button" (click)="delMeasures($event, 0);dialogVisible.demensionsVisible= false;">
+                            <i nz-icon nzType="delete" nzTheme="outline"></i> Remove
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </nz-dropdown-menu>
-              </div>
-              <span *ngIf="!reportData.measures.name" class="report-chart-tooltip">Drag column here</span>
+                  </nz-dropdown-menu>
+                </div>
+                <span *ngIf="!reportData.designArr[0].name" class="report-chart-tooltip">Drag column here</span>
+              </span>
             </span>
-          </span>
-        </div>
+            <span class="k2-designer-chart-layer-item">
+              <label>{{chartSettingXY.y}}</label>
+              <span dnd-droppable (onDropSuccess)="getDropMeasures($event, 1)" nzTrigger="click" [nzVisible]="dialogVisible.measuresVisible" nz-dropdown [nzDropdownMenu]="measures">
+                <div [ngClass]="{'data-column-item-str': reportData.designArr[1].Otype == 'char' || reportData.designArr[1].Otype == 'date' , 'data-column-item-num': reportData.designArr[1].Otype =='number' }">
+                  <i class="icon iconfont {{reportData.designArr[1].icon}}"></i>{{reportData.designArr[1].name}}
+                  <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
+                  <nz-dropdown-menu #measures="nzDropdownMenu">
+                    <div nz-menu nzSelectable>
+                      <div class="measures-pop-container">
+                        <div class="measures-pop-content">
+                          <label>Calculation</label>
+                          <nz-select style="width: 220px;" [(ngModel)]="reportData.designArr[1].op" (ngModelChange) ="changeCalc();">
+                            <nz-option nzValue="count" nzLabel="Count"></nz-option>
+                            <nz-option nzValue="null" nzLabel="No aggregation"></nz-option>
+                          </nz-select>
+                        </div>
+                        <div class="measures-pop-footer">
+                          <span class="measures-pop-button" (click)="delMeasures($event, 1);dialogVisible.measuresVisible= false;">
+                            <i nz-icon nzType="delete" nzTheme="outline"></i> Remove
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </nz-dropdown-menu>
+                </div>
+                <span *ngIf="!reportData.designArr[1].name" class="report-chart-tooltip">Drag column here</span>
+              </span>
+            </span>
+          </div>
+          <div class="k2-designer-chart-layer" *ngIf="reportData.chartType == 'candlestickBarChart' || reportData.chartType == 'ohlcBarChart'">
+            <span class="k2-designer-chart-layer-item">
+              <label>DATE</label>
+              <span dnd-droppable (onDropSuccess)="getDropMeasures($event, 0)" nzTrigger="click" [nzVisible]="dialogVisible.measuresVisible" nz-dropdown [nzDropdownMenu]="measures">
+                <div [ngClass]="{'data-column-item-str': reportData.designArr[0].Otype == 'char' || reportData.designArr[0].Otype == 'date', 'data-column-item-num': reportData.designArr[0].Otype =='number' }">
+                  {{reportData.designArr[0].name}}
+                  <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
+                  <nz-dropdown-menu #measures="nzDropdownMenu">
+                    <div nz-menu nzSelectable>
+                      <div class="measures-pop-container">
+                        <div class="measures-pop-content">
+                          <label>Calculation</label>
+                          <nz-select style="width: 220px;" [(ngModel)]="reportData.designArr[0].op" (ngModelChange) ="changeCalc();">
+                            <nz-option nzValue="count" nzLabel="Count"></nz-option>
+                            <nz-option nzValue="null" nzLabel="No aggregation"></nz-option>
+                          </nz-select>
+                        </div>
+                        <div class="measures-pop-footer">
+                          <span class="measures-pop-button" (click)="delMeasures($event, 0);dialogVisible.measuresVisible= false;">
+                            <i nz-icon nzType="delete" nzTheme="outline"></i> Remove
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </nz-dropdown-menu>
+                </div>
+                <span *ngIf="!reportData.designArr[0].name" class="report-chart-tooltip">Drag column here</span>
+              </span>
+            </span>
+            <span class="k2-designer-chart-layer-item">
+              <label>HIGH VALUE</label>
+              <span dnd-droppable (onDropSuccess)="getDropMeasures($event,1)" nzTrigger="click" [nzVisible]="dialogVisible.measuresVisible" nz-dropdown [nzDropdownMenu]="measures">
+                <div [ngClass]="{'data-column-item-str': reportData.designArr[1].Otype == 'char' || reportData.designArr[1].Otype == 'date', 'data-column-item-num': reportData.designArr[1].Otype =='number' }">
+                  {{reportData.designArr[1].name}}
+                  <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
+                  <nz-dropdown-menu #measures="nzDropdownMenu">
+                    <div nz-menu nzSelectable>
+                      <div class="measures-pop-container">
+                        <div class="measures-pop-content">
+                          <label>Calculation</label>
+                          <nz-select style="width: 220px;" [(ngModel)]="reportData.designArr[1].op" (ngModelChange) ="changeCalc();">
+                            <nz-option nzValue="count" nzLabel="Count"></nz-option>
+                            <nz-option nzValue="null" nzLabel="No aggregation"></nz-option>
+                          </nz-select>
+                        </div>
+                        <div class="measures-pop-footer">
+                          <span class="measures-pop-button" (click)="delMeasures($event, 1);dialogVisible.measuresVisible= false;">
+                            <i nz-icon nzType="delete" nzTheme="outline"></i> Remove
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </nz-dropdown-menu>
+                </div>
+                <span *ngIf="!reportData.designArr[1].name" class="report-chart-tooltip">Drag column here</span>
+              </span>
+            </span>
+            <span class="k2-designer-chart-layer-item">
+              <label>LOW VALUE</label>
+              <span dnd-droppable (onDropSuccess)="getDropMeasures($event, 2)" nzTrigger="click" [nzVisible]="dialogVisible.measuresVisible" nz-dropdown [nzDropdownMenu]="measures">
+                <div [ngClass]="{'data-column-item-str': reportData.designArr[2].Otype == 'char' || reportData.designArr[2].Otype == 'date', 'data-column-item-num': reportData.designArr[2].Otype =='number' }">
+                  {{reportData.designArr[2].name}}
+                  <!--                <i class="report-designer-data-close" (click)="delMeasures($event)" nz-icon nzType="close-circle" nzTheme="outline"></i>-->
+                  <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
+                  <nz-dropdown-menu #measures="nzDropdownMenu">
+                    <div nz-menu nzSelectable>
+                      <div class="measures-pop-container">
+                        <div class="measures-pop-content">
+                          <label>Calculation</label>
+                          <nz-select style="width: 220px;" [(ngModel)]="reportData.designArr[2].op" (ngModelChange) ="changeCalc();">
+                            <nz-option nzValue="count" nzLabel="Count"></nz-option>
+                            <nz-option nzValue="null" nzLabel="No aggregation"></nz-option>
+                          </nz-select>
+                        </div>
+                        <div class="measures-pop-footer">
+                          <span class="measures-pop-button" (click)="delMeasures($event, 2);dialogVisible.measuresVisible= false;">
+                            <i nz-icon nzType="delete" nzTheme="outline"></i> Remove
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </nz-dropdown-menu>
+                </div>
+                <span *ngIf="!reportData.designArr[2].name" class="report-chart-tooltip">Drag column here</span>
+              </span>
+            </span>
+            <span class="k2-designer-chart-layer-item">
+              <label>OPEN VALUE</label>
+              <span dnd-droppable (onDropSuccess)="getDropMeasures($event, 3)" nzTrigger="click" [nzVisible]="dialogVisible.measuresVisible" nz-dropdown [nzDropdownMenu]="measures">
+                <div [ngClass]="{'data-column-item-str': reportData.designArr[3].Otype == 'char' || reportData.designArr[3].Otype == 'date', 'data-column-item-num': reportData.designArr[3].Otype =='number' }">
+                  {{reportData.designArr[3].name}}
+                  <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
+                  <nz-dropdown-menu #measures="nzDropdownMenu">
+                    <div nz-menu nzSelectable>
+                      <div class="measures-pop-container">
+                        <div class="measures-pop-content">
+                          <label>Calculation</label>
+                          <nz-select style="width: 220px;" [(ngModel)]="reportData.designArr[3].op" (ngModelChange) ="changeCalc();">
+                            <nz-option nzValue="count" nzLabel="Count"></nz-option>
+                            <nz-option nzValue="null" nzLabel="No aggregation"></nz-option>
+                          </nz-select>
+                        </div>
+                        <div class="measures-pop-footer">
+                          <span class="measures-pop-button" (click)="delMeasures($event, 3);dialogVisible.measuresVisible= false;">
+                            <i nz-icon nzType="delete" nzTheme="outline"></i> Remove
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </nz-dropdown-menu>
+                </div>
+                <span *ngIf="!reportData.designArr[3].name" class="report-chart-tooltip">Drag column here</span>
+              </span>
+            </span>
+            <span class="k2-designer-chart-layer-item">
+              <label>CLOSE VALUE</label>
+              <span dnd-droppable (onDropSuccess)="getDropMeasures($event, 4)" nzTrigger="click" [nzVisible]="dialogVisible.measuresVisible" nz-dropdown [nzDropdownMenu]="measures">
+                <div [ngClass]="{'data-column-item-str': reportData.designArr[4].Otype == 'char' || reportData.designArr[4].Otype == 'date', 'data-column-item-num': reportData.designArr[4].Otype =='number' }">
+                  {{reportData.designArr[4].name}}
+                  <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
+                  <nz-dropdown-menu #measures="nzDropdownMenu">
+                    <div nz-menu nzSelectable>
+                      <div class="measures-pop-container">
+                        <div class="measures-pop-content">
+                          <label>Calculation</label>
+                          <nz-select style="width: 220px;" [(ngModel)]="reportData.designArr[4].op" (ngModelChange) ="changeCalc();">
+                            <nz-option nzValue="count" nzLabel="Count"></nz-option>
+                            <nz-option nzValue="null" nzLabel="No aggregation"></nz-option>
+                          </nz-select>
+                        </div>
+                        <div class="measures-pop-footer">
+                          <span class="measures-pop-button" (click)="delMeasures($event, 4);dialogVisible.measuresVisible= false;">
+                            <i nz-icon nzType="delete" nzTheme="outline"></i> Remove
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </nz-dropdown-menu>
+                </div>
+                <span *ngIf="!reportData.designArr[4].name" class="report-chart-tooltip">Drag column here</span>
+              </span>
+            </span>
+          </div>
+          <div class="k2-designer-chart-layer" *ngIf="reportData.chartType == 'sunburstChart'">
+            <span class="k2-designer-chart-layer-item">
+              <label>VALUE</label>
+              <span dnd-droppable (onDropSuccess)="getDropMeasures($event, 0)">
+                <div [ngClass]="{'data-column-item-str': reportData.designArr[0].Otype == 'char' || reportData.designArr[0].Otype == 'date', 'data-column-item-num': reportData.designArr[0].Otype =='number' }">
+                  {{reportData.designArr[0].name}}
+                  <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
+                </div>
+                <span *ngIf="!reportData.designArr[0].name" class="report-chart-tooltip">Drag column here</span>
+              </span>
+            </span>
+            <span class="k2-designer-chart-layer-item">
+              <label>CATEGORY 1</label>
+              <span dnd-droppable (onDropSuccess)="getDropMeasures($event,1)">
+                <div [ngClass]="{'data-column-item-str': reportData.designArr[1].Otype == 'char' || reportData.designArr[1].Otype == 'date', 'data-column-item-num': reportData.designArr[1].Otype =='number' }">
+                  {{reportData.designArr[1].name}}
+                  <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
+                </div>
+                <span *ngIf="!reportData.designArr[1].name" class="report-chart-tooltip">Drag column here</span>
+              </span>
+            </span>
+            <span class="k2-designer-chart-layer-item">
+              <label>CATEGORY 2</label>
+              <span dnd-droppable (onDropSuccess)="getDropMeasures($event, 2)">
+                <div [ngClass]="{'data-column-item-str': reportData.designArr[2].Otype == 'char' || reportData.designArr[2].Otype == 'date', 'data-column-item-num': reportData.designArr[2].Otype =='number' }">
+                  {{reportData.designArr[2].name}}
+                  <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
+                </div>
+                <span *ngIf="!reportData.designArr[2].name" class="report-chart-tooltip">Drag column here</span>
+              </span>
+            </span>
+            <span class="k2-designer-chart-layer-item">
+              <label>CATEGORY 3</label>
+              <span dnd-droppable (onDropSuccess)="getDropMeasures($event, 3)">
+                <div [ngClass]="{'data-column-item-str': reportData.designArr[3].Otype == 'char' || reportData.designArr[3].Otype == 'date', 'data-column-item-num': reportData.designArr[3].Otype =='number' }">
+                  {{reportData.designArr[3].name}}
+                  <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
+                </div>
+                <span *ngIf="!reportData.designArr[3].name" class="report-chart-tooltip">Drag column here</span>
+              </span>
+            </span>
+            <span class="k2-designer-chart-layer-item">
+              <label>CATEGORY 4</label>
+              <span dnd-droppable (onDropSuccess)="getDropMeasures($event, 4)">
+                <div [ngClass]="{'data-column-item-str': reportData.designArr[4].Otype == 'char' || reportData.designArr[4].Otype == 'date', 'data-column-item-num': reportData.designArr[4].Otype =='number' }">
+                  {{reportData.designArr[4].name}}
+                  <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
+                </div>
+                <span *ngIf="!reportData.designArr[4].name" class="report-chart-tooltip">Drag column here</span>
+              </span>
+            </span>
+            <span class="k2-designer-chart-layer-item">
+              <label>CATEGORY 5</label>
+              <span dnd-droppable (onDropSuccess)="getDropMeasures($event, 5)">
+                <div [ngClass]="{'data-column-item-str': reportData.designArr[5].Otype == 'char'|| reportData.designArr[5].Otype == 'date', 'data-column-item-num': reportData.designArr[5].Otype =='number' }">
+                  {{reportData.designArr[5].name}}
+                  <i class="report-designer-data-close" nz-icon nzType="down" nzTheme="outline" ></i>
+                </div>
+                <span *ngIf="!reportData.designArr[5].name" class="report-chart-tooltip">Drag column here</span>
+              </span>
+            </span>
+          </div>
         <div>
-          <app-chart [chartType]="reportDesigner.chartType" [data]="dataSet" [x]="reportData.demensions" [y]="reportData.measures"></app-chart>
-
+          <app-chart [chartType]="reportData.chartType" [options]="reportData.chart" [data]="reportData.tableData" [xy]="reportData.designArr"></app-chart>
         </div>
       </div>
       <div *ngIf="reportDesigner.chart" class="k2-designer-chartType" malihu-scrollbar  [scrollbarOptions]="scrollbarOptions">
         <h5>CHART TYPES</h5>
-        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'lineChart'}" (click)="selectChart('lineChart');">
-          <i nz-icon nzType="line-chart" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">line chart</span>
-        </div>
-        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'stackedAreaChart'}" (click)="selectChart('stackedAreaChart');">
-          <i nz-icon nzType="area-chart" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">area chart</span>
-        </div>
-        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'pieChart'}" (click)="selectChart('pieChart');">
-          <i nz-icon nzType="pie-chart" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">pie chart</span>
-        </div>
-        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'discreteBarChart'}" (click)="selectChart('discreteBarChart');">
-          <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">bar chart</span>
-        </div>
-        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'donutPieChart'}" (click)="selectChart('donutPieChart');">
-          <i nz-icon nzType="pie-chart" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">donut chart</span>
-        </div>
-        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'cumulativeLineChart'}" (click)="selectChart('cumulativeLineChart');">
-          <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">cumulative line chart</span>
-        </div>
-        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'multiBarChart'}" (click)="selectChart('multiBarChart');">
-          <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">multi bar chart</span>
-        </div>
-        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'multiBarHorizontalChart'}" (click)="selectChart('multiBarHorizontalChart');">
-          <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">multi bar historical chart</span>
-        </div>
-        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'historicalBarChart'}" (click)="selectChart('historicalBarChart');">
-          <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">historical bar chart</span>
-        </div>
-        <!--<div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'scatter'}" (click)="selectChart('scatter');">
-          <i nz-icon nzType="dot-chart" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">scatter</span>
-        </div>-->
-        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'lineWithFocusChart'}" (click)="selectChart('lineWithFocusChart');">
-          <i nz-icon nzType="line-chart" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">Line With Focus Chart</span>
-        </div>
-        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'sparklinePlusChart'}" (click)="selectChart('sparklinePlusChart');">
-          <i nz-icon nzType="line-chart" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">SparklinePlus</span>
-        </div>
-        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'parallelCoordinates'}" (click)="selectChart('parallelCoordinates');">
-          <i nz-icon nzType="line-chart" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">parallel coordinates</span>
-        </div>
-        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'multiChart'}" (click)="selectChart('multiChart');">
-          <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">multi chart</span>
-        </div>
-<!--        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'forceDirectedGraph'}" (click)="selectChart('forceDirectedGraph');">-->
-<!--          <i nz-icon nzType="dot-chart" nzTheme="outline"></i>-->
-<!--          <span class="k2-designer-chart-text">force directed graph</span>-->
-<!--        </div>-->
-        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'boxPlotChart'}" (click)="selectChart('boxPlotChart');">
-          <i nz-icon nzType="box-plot" nzTheme="outline"></i>
-          <span class="k2-designer-chart-text">box chart</span>
-        </div>
-<!--        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'candlestickBarChart'}" (click)="selectChart('candlestickBarChart');">-->
-<!--          <i nz-icon nzType="sliders" nzTheme="outline"></i>-->
-<!--          <span class="k2-designer-chart-text">candlestick bar chart</span>-->
-<!--        </div>-->
-<!--        <div class="k2-designer-chart-item" [ngClass]="{'selected': reportDesigner.chartType == 'ohlcBarChart'}" (click)="selectChart('ohlcBarChart');">-->
-<!--          <i nz-icon nzType="sliders" nzTheme="outline"></i>-->
-<!--          <span class="k2-designer-chart-text">ohlc bar chart</span>-->
+        <div class="k2-designer-chart-item" *ngFor="let chart of chartTemplates;" [ngClass]="{'selected': reportData.chartType == chart.type}" (click)="selectChart(chart.type);">
+          <i nz-icon nzType="{{chart.icon}}" nzTheme="outline"></i>
+          <i class="icon iconfont {{chart.icon}}"></i>
+          <span class="k2-designer-chart-text">{{chart.name}}</span>
         </div>
       </div>
+    </div>
     </div>
   <div class="k2-designer-footer" [ngClass]="{'max': !reportDesigner.designerMain}" *ngIf="reportDesigner.dataTable">
     <div class="k2-designer-table">
@@ -255,7 +434,7 @@
           <i nz-icon (click)="toggleTable();" nzType="arrows-alt" nzTheme="outline"></i>
         </div>
       </div>
-      <nz-table #basicTable [nzData]="dataSet">
+      <nz-table #basicTable [nzData]="reportData.tableData">
         <thead>
         <tr>
           <th *ngFor="let item of reportData.selectedColumn">{{item.name}}</th>
@@ -270,5 +449,5 @@
     </div>
   </div>
 </div>
-<filter *ngIf="dialogVisible.filter" (closeEvent)="closeFilterDialog($event)"></filter>
+<filter *ngIf="dialogVisible.filter" [whereCondition]="whereConditionMap" (closeEvent)="closeFilterDialog($event)"></filter>
 <show-columns *ngIf="dialogVisible.column"  (closeEvent)="closeColumnsDialog($event)"></show-columns>

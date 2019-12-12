@@ -7,6 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SidebarComponent implements OnInit {
   isOpen: boolean = false;
+
+  panels: Array<any> = [{
+    name: 'aaaaa',
+    active: true
+  }]
   constructor() { }
 
   ngOnInit() {

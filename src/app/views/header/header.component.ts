@@ -1,4 +1,5 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -6,17 +7,32 @@ import {Component, HostListener, OnInit} from '@angular/core';
   styleUrls: ['./header.component.less']
 })
 export class HeaderComponent implements OnInit {
-  showUserInfo: boolean = false;
-  constructor() { }
+  routerPath: string = '';
+  navList: Array<any> = [{
+    name: '仪表盘',
+    icon: 'dashboard',
+    link: ''
+  },
+  {
+    name: '报表',
+    icon: 'home',
+    link: '/designer/report/reportList'
+  },
+  {
+    name: '设置',
+    icon: 'setting',
+    link: ''
+  }
+  ];
+
+  constructor(private router: Router) { }
 
   ngOnInit() {
-  }
-  @HostListener('document:click', ['$event'])
-  private documentClick(event: Event) {
-    this.showUserInfo = false;
-  }
-  changeUserInfo($event) {
-    this.showUserInfo = !this.showUserInfo;
-    $event.stopPropagation();
+    this.routerPath = this.router.url;
+    this.router.events.subscribe((data) => {
+      if (data instanceof NavigationEnd) {
+        this.routerPath = data.url;
+      }
+    });
   }
 }

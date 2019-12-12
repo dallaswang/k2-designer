@@ -1,17 +1,53 @@
 @border-color: #ccc;
 @tips-color: #ccc;
-@selected-color: #E5F3FC;
+@selected-color: #eff1f4;
+@primary-color: #3DB7CE;
 @num-color: #D6F1EC;
-
 .k2-designer-container {
   display: flex;
   flex-direction: column;
   height: 100%;
   background: #fff;
+  .k2-designer-button-container {
+    display: flex;
+    padding: 16px 10px;
+    border-bottom: 1px solid @border-color;
+    .left {
+      flex: 1;
+      padding-right: 12px;
+    }
+    .btn-export {
+      margin-left: 10px;
+    }
+  }
+  .k2-designer-containe-top {
+    position: relative;
+    .k2-designer-header-opera {
+      position: absolute;
+      left: 50%;
+      top: 50px;
+      height: 25px;
+      line-height: 25px;
+      color: #3DB7CE;
+      z-index: 333;
+      font-size: 25px;
+      transform: translate(-50%,0);
+      cursor: pointer;
+      background: #fff;
+      i {
+        transform: rotate(0deg);
+        transition: transform .5s;
+      }
+      .hidden {
+        transform: rotate(180deg);
+        transition: transform .5s;
+      }
+    }
+  }
   .k2-designer-header {
+    position: relative;
     padding: 7px 10px;
     height: 80px;
-    background: #fff;
     border-bottom: 1px solid @border-color;
     
     .k2-designer-header-item {
@@ -35,6 +71,7 @@
     }
   }
   .k2-designer-main {
+    position: relative;
     display: flex;
     flex: 1;
     overflow: hidden;
@@ -47,6 +84,9 @@
       background: @selected-color;
       font-size: 12px;
       cursor: pointer;
+      .iconfont{
+        margin-right: 3px;
+      }
     }
     .data-column-item-num {
       background: @num-color;
@@ -103,15 +143,18 @@
         border-right: 1px solid @border-color;
         .k2-designer-chart-layer {
           display: flex;
+          flex-wrap: wrap;
           padding: 20px;
-          border-bottom: 1px solid #ccc;
+          border-bottom: 1px solid @border-color;
           .k2-designer-chart-layer-item {
             display: flex;
             align-items: center;
             margin-right: 10px;
+            margin-bottom: 4px;
             height: 30px;
             > label {
               margin-right: 8px;
+              white-space: nowrap;
             }
             > span {
               display: inline-block;
@@ -150,7 +193,7 @@
           }
           &.selected {
             i {
-              color: #7CC6E1;
+              color: @primary-color;
             }
             .k2-designer-chart-text {
               font-weight: bold;;
@@ -162,7 +205,7 @@
   }
 
   .k2-designer-footer {
-    overflow: hidden;
+    overflow: auto;
     height: 180px;
     &.max {
       flex: 1;
@@ -180,7 +223,7 @@
             span,i {
               margin-left: 20px;
               cursor: pointer;
-              color: #659bc0;
+              color: @primary-color;
             }
         }
       }
@@ -232,7 +275,7 @@
     padding: 0 10px;
     height: 50px;
     line-height: 50px;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid @border-color;
     .measures-pop-button {
       padding: 8px 14px;
       color: #e4584f;

@@ -155,6 +155,6 @@ if (window.location.hash) {
 
 function showUser(user) {
     if (!user) {
-      signIn('api read write', 'token');
+      // signIn('api read write', 'token');
     }
 }

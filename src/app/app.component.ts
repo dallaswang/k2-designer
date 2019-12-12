@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 declare var Oidc;
 import { HttpService } from './services/httpRequest.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,6 +13,5 @@ export class AppComponent implements OnInit {
   constructor(private httpService: HttpService) {}
 
   ngOnInit() {
-
   }
 }

@@ -1,0 +1,65 @@
+{
+  "id": "1552853",
+  "name": "report-designer",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "2017487",
+      "name": "number",
+      "font_class": "number",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "4098145",
+      "name": "Spark_Line",
+      "font_class": "Spark_Line",
+      "unicode": "e6b9",
+      "unicode_decimal": 59065
+    },
+    {
+      "icon_id": "4424244",
+      "name": "parallel coordinate",
+      "font_class": "Artboard",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "7359573",
+      "name": "donut",
+      "font_class": "donut",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "7534935",
+      "name": "sunburst",
+      "font_class": "sunburst",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "9821294",
+      "name": "string",
+      "font_class": "string",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "9948938",
+      "name": "line-bar",
+      "font_class": "line-bar",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "10245292",
+      "name": "date",
+      "font_class": "date",
+      "unicode": "e66e",
+      "unicode_decimal": 58990
+    }
+  ]
+}

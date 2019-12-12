@@ -6,18 +6,11 @@ import {Component, EventEmitter, OnInit, Input, Output, ViewEncapsulation} from 
   encapsulation: ViewEncapsulation.None
 })
 export class FilterComponent implements OnInit {
-  @Input() fieldType: string;
+
   @Output() closeEvent = new EventEmitter<any>();
 
   visible: boolean = true;
-  whereCondition: object = {
-    queryType: 'and',
-    column: 'Id',
-    operator: '',
-    value: '',
-    group: [],
-    children: []
-  }
+  @Input() whereCondition: object
   constructor() { }
 
   ngOnInit() {

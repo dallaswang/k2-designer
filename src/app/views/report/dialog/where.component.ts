@@ -1,5 +1,5 @@
 import {Component, OnInit, Input, ViewEncapsulation} from '@angular/core';
-import { ColumnService } from '../../services/column.service';
+import { ColumnService } from '../services/column.service';
 
 @Component({
   selector: 'app-where',
@@ -72,4 +72,12 @@ export class WhereComponent implements OnInit {
       }
     })
   }
+
+  // 修改日期类型
+  changeDateType(item) {
+    item.value = '';
+  }
+
+  // 选择日期类型
+  changeDateRule() {}
 }

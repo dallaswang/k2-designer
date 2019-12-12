@@ -47,7 +47,7 @@
             <nz-option nzValue="contains" nzLabel="contains"></nz-option>
             <nz-option nzValue="length" nzLabel="has length"></nz-option>
           </nz-select>
-          <nz-select style="width: 120px;" *ngIf="item.colunmType == 'date'" [(ngModel)]="item.operator">
+          <nz-select style="width: 120px;" *ngIf="item.colunmType == 'date'" (ngModelChange)="changeDateType(item)" [(ngModel)]="item.operator">
             <nz-option nzValue="date_equals_datetime" nzLabel="date equals">-->
             </nz-option>
             <nz-option nzValue="before_date_datetime" nzLabel="before date">
@@ -60,9 +60,9 @@
             </nz-option>
             <nz-option nzValue="year_equals_int" nzLabel="year equals">
             </nz-option>
-            <nz-option nzValue="month_number equals_int" nzLabel="month number equals">
+            <nz-option nzValue="month_number" nzLabel="month number equals">
             </nz-option>
-            <nz-option nzValue="day_number equals_int" nzLabel="day number equals">
+            <nz-option nzValue="day_number" nzLabel="day number equals">
             </nz-option>
             <nz-option nzValue="hour_equals_int" nzLabel="hour equals">
             </nz-option>
@@ -71,7 +71,10 @@
             <nz-option nzValue="second_equals_int" nzLabel="second equals">
             </nz-option>
           </nz-select>
-          <nz-select style="width: 120px;" *ngIf="item.colunmType == 'date' && (item.operator == 'before_select' || item.operator == 'after_select')">
+
+        </div>
+        <div class="rule-value-container" *ngIf="item.column">
+          <nz-select style="width: 120px;" [(ngModel)]="item.value" (ngModelChange)="changeDateRule(item)" *ngIf="item.colunmType == 'date' && (item.operator == 'before_select' || item.operator == 'after_select')">
             <nz-option nzValue="0" nzLabel="now">
             </nz-option>
             <nz-option nzValue="1" nzLabel="yesterday">
@@ -87,11 +90,11 @@
             <nz-option nzValue="6" nzLabel="next month">
             </nz-option>
           </nz-select>
-        </div>
-        <div class="rule-value-container" *ngIf="item.column">
           <input *ngIf="item.colunmType == 'string' || item.colunmType == 'int'"  nz-input placeholder="" nzSize="default" [(ngModel)]="item.value"/>
-          <nz-date-picker *ngIf="item.colunmType == 'date'" [(ngModel)]="item.value"></nz-date-picker>
-          <nz-input-number *ngIf="(item.colunmType == 'date' && item.operator == 'year_equals_int') || (item.colunmType == 'date' && item.operator == 'has_length_int')"  [(ngModel)]="item.value" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
+          <nz-date-picker *ngIf="item.colunmType == 'date' && (item.operator === 'date_equals_datetime' || item.operator === 'before_date_datetime' || item.operator ==='after_date_datetime')" [(ngModel)]="item.value"></nz-date-picker>
+          <nz-input-number *ngIf="item.colunmType == 'date' && (item.operator == 'year_equals_int' ||
+              item.operator == 'month_number'|| item.operator == 'day_number' || item.operator == 'hour_equals_int' ||
+                 item.operator == 'minute_equals_int' || item.operator == 'second_equals_int')"  [(ngModel)]="item.value" [nzMin]="1" [nzMax]="10" [nzStep]="1"></nz-input-number>
         </div>
       </li>
     </ul>

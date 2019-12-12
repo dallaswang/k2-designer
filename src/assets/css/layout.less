@@ -1,11 +1,13 @@
 body {
-  background: #e6e6e8;
+  background: @body-bg;
 }
 ul,li {
   padding: 0;
   list-style-type: none;
 }
-
+a {
+  color: #3DB7CE;
+}
 .data-source-modal-dialog {
   .ant-modal-body {
     padding: 0;
@@ -14,163 +16,70 @@ ul,li {
 .report-designer-container {
   position: absolute;
   display: flex;
+  flex-direction: column;
   height: 100%;
   width: 100%;
   background-color: #2b3e50;
 
-  .report-designer-side {
-    position: relative;
-    width: 260px;
-    transition: width .5s;
-    overflow-x: hidden;
-    .side-logo {
-      display: block;
-      margin-top: 10px;
-      width:200px;
-      height:40px;
-    }
-    .report-designer-logo {
-      height: 40px;
-    }
-    &.shrink {
-      width: 70px;
-      transition: width .5s;
-      .side-logo {
-        transition: width .5s;
-        display: none;
-      }
-      .side-icon-box {
-        right: 13px;
-      }
-      .report-designer-menu {
-        li {
-          justify-content: center;
-          i {
-            font-size: 26px;
-          }
-          span {
-            display: none;
-          }
-        }
-      }
-    }
-    .side-icon-box{
-      display: inline-block;
-      width: 44px;
-      height: 44px;
-      position: absolute;
-      right: 5px;
-      top: 5px;
-      cursor: pointer;
-      text-align: center;
-      line-height: 44px;
-      border-radius: 50%;
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.2);
-      }
-    }
-    .side-icon {
-      width:24px;
-      height:24px;
-      cursor: pointer;
-    }
-  }
   .report-designer-main {
     display: flex;
     flex: 1;
     overflow: hidden;
-    flex-direction: column;
     background: #E1E1E1;
-    .report-designer-header {
-      width: 100%;
-      height: 60px;
-      background: #F7F7F7;
-      .user-header {
-        position: absolute;
-        right: 10px;
-        top: 10px;
+    .report-designer-side {
+      position: relative;
+      overflow-x: hidden;
+      width: 240px;
+      height: 100%;
+      transition: width .2s;
+      background: #3db7ce;
+      .ant-menu-dark, .ant-menu-dark .ant-menu-sub {
+        background: #65c7d9;
+        box-shadow: none;
+      }
+      .ant-menu-dark .ant-menu-item-selected .anticon, .ant-menu-dark .ant-menu-item-selected .anticon+span, .ant-menu-dark .ant-menu-item-selected>a, .ant-menu-dark .ant-menu-item-selected>a:hover, .ant-menu-dark.ant-menu-inline .ant-menu-item, .ant-menu-dark.ant-menu-inline .ant-menu-submenu-title {
+        color: #205e5a;
+      }
+      .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected, .ant-menu.ant-menu-dark .ant-menu-item-selected {
+        background-color: #78d6cd;
+      }
+      .logo {
+        width: 185pt;
+        height: 53pt;
+        color: #333345;
+        background-color: #f1f2f3;
+        font-size: 10pt;
+        padding: 9pt;
+      }
+      &.shrink {
+        width: 70px;
+        transition: width .2s;
+        .logo {
+          max-width: 100%;
+          max-height: 40px;
+        }
+      }
+      .side-icon-box{
         display: inline-block;
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-        line-height: 40px;
-        border-radius: 50%;
-        background-color: #efefef;
-        text-align: center;
+        width: 100%;
+        height: 26px;
+        position: absolute;
+        bottom: 0px;
         cursor: pointer;
+        text-align: center;
+        line-height: 24px;
+        border-top: 1px solid rgba(255,255,255,.7);
+        border-bottom: 1px solid rgba(255,255,255,.7);
+        color: #fff;
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.2);
+        }
       }
     }
     .report-designer-content {
+      overflow: auto;
       flex: 1;
       padding: 6px;
-    }
-  }
-}
-.notificationsPopover {
-  position: absolute;
-  right: 10px;
-  top: 60px;
-  z-index: 10;
-  padding: 0;
-  width: 350px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 5px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-
-  .notificationPopover-account-header {
-    display: flex;
-    padding-top: 16px;
-    padding-bottom: 16px;
-    padding-left: 12px;
-    vertical-align: top;
-    position: relative;
-    background: #fff;
-    border-bottom: 1px solid #3d3d3d;
-    border-color: rgba(0, 0, 0, .1);
-    color: rgba(0, 0, 0, .8);
-    border-radius: 5px;
-  }
-  .notification-account-avatar {
-    display: inline-block;
-    margin-right: 12px;
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
-    line-height: 40px;
-    border-radius: 50%;
-    background-color: #efefef;
-    text-align: center;
-  }
-  .notification-account-email {
-    color: #ccc;
-  }
-  .notification-account-button-wrapper {
-    a {
-      color: #4b87b0;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 8px 12px;
-    }
-  }
-}
-.report-designer-menu-box {
-  background:#2B3447;
-}
-.report-designer-menu {
-  li {
-    align-items: center;
-    color: rgba(255, 255, 255, 0.8);
-    display: flex;
-    font-family: Soleto, sans-serif;
-    font-size: 1.2rem;
-    line-height: normal;
-    flex: 0 0 auto;
-    margin: 15px 0px;
-    padding: 5px 9px 5px 14px;
-    cursor: pointer;
-    white-space: nowrap;
-    i {
-      margin-right: 10px;
     }
   }
 }

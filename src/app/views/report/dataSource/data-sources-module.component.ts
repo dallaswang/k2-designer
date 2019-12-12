@@ -14,7 +14,7 @@ export class DataSourcesModuleComponent implements OnInit {
   selectedTable = {};
   isSelectedTable = false;
   breadcrumbItems = [];
-  selecteModule = {
+  selectedModule = {
     module: '',
     table: '',
     data: []
@@ -34,31 +34,31 @@ export class DataSourcesModuleComponent implements OnInit {
         item['entityName'] = schema[schema.length-1].entityContainer[0].entitySet[0].name;
         delete item.Schema;
       });
-      this.selecteModule.data = this.moduleList;
+      this.selectedModule.data = this.moduleList;
     })
   }
   backDataSet() {
     this.isSelectedTable = false;
     this.selectedTable = {};
     this.breadcrumbItems = [];
-    this.selecteModule.module = '';
-    this.selecteModule.table = '';
+    this.selectedModule.module = '';
+    this.selectedModule.table = '';
   }
   selectModule(item) {
     this.breadcrumbItems.push(item.Name);
-    this.selecteModule.module = item.Name;
+    this.selectedModule.module = item.Name;
     this.tableList = item.tableList;
     this.isSelectedTable = true;
   }
   selectTable(item) {
-    this.selecteModule.table = item.name;
+    this.selectedModule.table = item.name;
     this.selectedTable = item;
   }
   handleCancel() {
     this.closeEvent.emit(null);
   }
   handleOk() {
-    localStorage.setItem('selecteModule', JSON.stringify(this.selecteModule));
+    localStorage.setItem('selectedModule', JSON.stringify(this.selectedModule));
     this.closeEvent.emit(true);
   }
 }

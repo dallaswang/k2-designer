@@ -50,11 +50,13 @@
               "node_modules/normalize.css/normalize.css",
               "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
               "node_modules/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css",
-              "src/styles.less"
+              "src/styles.less",
+              "src/assets/iconfont/iconfont.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js"
+              "node_modules/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min.js",
+              "node_modules/mockjs/dist/mock-min.js"
             ]
           },
           "configurations": {

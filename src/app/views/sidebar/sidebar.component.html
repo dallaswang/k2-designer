@@ -1,24 +1,29 @@
 <div class="report-designer-side" [ngClass]="{'shrink': !isOpen}" >
   <div class="report-designer-logo">
-    <img class="side-logo" src="assets/imgs/logo.svg" />
-    <span class="side-icon-box">
-        <img *ngIf="isOpen" (click)="isOpen =!isOpen" src="assets/imgs/icon-left.svg" class="side-icon"/>
-        <img *ngIf="!isOpen" (click)="isOpen =!isOpen" src="assets/imgs/icon-right.svg" class="side-icon"/>
+    <div>
+      <img class="logo" src="assets/imgs/logo.png" alt="">
+    </div>
+    <span class="side-icon-box" (click)="isOpen =!isOpen">
+      <i *ngIf="!isOpen" nz-icon nzType="double-right" nzTheme="outline"></i>
+      <i *ngIf="isOpen" nz-icon nzType="double-left" nzTheme="outline"></i>
       </span>
   </div>
-  <div class="report-designer-menu-box">
-    <ul class="report-designer-menu">
-      <li [routerLink]="'/designer/report/reportList'">
+  <div style="width: 240px;">
+    <ul nz-menu nzMode="inline" nzTheme="dark" [nzInlineCollapsed]="!isOpen">
+      <li nz-menu-item nz-tooltip nzPlacement="right" [nzTitle]="isOpen ? '' :  'Navigation One'" nzSelected [routerLink]="'/designer/report/reportList'">
         <i nz-icon nzType="calendar" nzTheme="outline"></i>
-        <span>Dashboards</span>
+        <span>report list</span>
       </li>
-      <li [routerLink]="'/designer/report/dataSources'">
-        <i nz-icon nzType="ant-cloud" nzTheme="outline"></i>
-        <span>Data Sources</span>
-      </li>
-      <li [routerLink]="'/designer/report/reportUser'">
-        <i nz-icon nzType="usergroup-add" nzTheme="outline"></i>
-        <span>Users</span>
+      <li nz-submenu nzTitle="Navigation Two" nzIcon="appstore">
+        <ul>
+          <li nz-menu-item>Option 5</li>
+          <li nz-submenu nzTitle="Submenu">
+            <ul>
+              <li nz-menu-item>Option 7</li>
+              <li nz-menu-item>Option 8</li>
+            </ul>
+          </li>
+        </ul>
       </li>
     </ul>
   </div>

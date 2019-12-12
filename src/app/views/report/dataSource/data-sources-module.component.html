@@ -1,4 +1,4 @@
-<nz-modal nzClassName="data-source-modal-dialog" [(nzVisible)]="isVisible" nzWidth="720"  nzTitle="Select a DataSet"  nzCancelText="CANCEL" nzOkText="Choose DataSet" (nzOnOk)="handleOk()" (nzOnCancel)="handleCancel()">
+<nz-modal nzClassName="data-source-modal-dialog" [(nzVisible)]="isVisible" nzWidth="720" (nzOnCancel)="handleCancel()" nzTitle="Select a DataSet" [nzFooter]="modalFooter">
   <div class="data-source-module">
     <div class="data-source-module-list">
       <div class="data-source-module-breadcrumb">
@@ -17,15 +17,6 @@
           </nz-breadcrumb-item>
         </nz-breadcrumb>
       </div>
-<!--      <div>-->
-<!--        <nz-input-group [nzPrefix]="suffixIconSearch">-->
-<!--          <input type="text" nz-input placeholder="搜索 DataSet..." />-->
-<!--        </nz-input-group>-->
-<!--        <ng-template #suffixIconSearch>-->
-<!--          <i nz-icon nzType="search"></i>-->
-<!--        </ng-template>-->
-<!--      </div>-->
-<!--      <div class="module-result">2个搜索结果</div>-->
       <div>
         <div class="module-result" *ngIf="!isSelectedTable">{{moduleList.length}} results</div>
         <ul class="data-source-module-ul" *ngIf="!isSelectedTable">
@@ -44,4 +35,8 @@
       </div>
     </div>
   </div>
+  <ng-template #modalFooter>
+    <button nz-button nzType="default" (click)="handleCancel()">CANCEL</button>
+    <button nz-button nzType="primary" (click)="handleOk()" [disabled]="!selectedTable.name">Choose DataSet</button>
+  </ng-template>
 </nz-modal>

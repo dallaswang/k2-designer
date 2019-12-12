@@ -5,10 +5,9 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NvD3Module } from 'ng2-nvd3';
 import { HttpClientModule } from '@angular/common/http';
 import {DndModule} from 'ng2-dnd';
-import {FilterCharPipe} from '../pipes/char.pipe';
 
 @NgModule({
-  declarations: [FilterCharPipe],
+  declarations: [],
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -26,7 +25,6 @@ import {FilterCharPipe} from '../pipes/char.pipe';
     NvD3Module,
     DndModule,
     NzRadioModule,
-    FilterCharPipe,
   ]
 })
 export class ShareModule { }

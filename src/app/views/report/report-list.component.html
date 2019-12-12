@@ -17,21 +17,37 @@
   </div>
 </div>
 <div class="report-grid-layout">
-  <div class="report-grid-item">
+  <div class="report-grid-item" *ngFor="let item of reportList;let i = index;">
     <div class="report-grid-item-inner">
       <div class="report-grid-item-title">
-        <div class="report-grid-text">Coffees Brewed</div>
+        <div class="report-grid-text">{{item.reportTitle}}</div>
         <div class="report-grid-edit">
-          <i nz-icon nzType="ellipsis" nzOverlayClassName="report-grid-menu" nzTheme="outline"  nz-dropdown [nzDropdownMenu]="chartMenu"></i>
+          <i nz-icon nzType="ellipsis" nzOverlayClassName="report-grid-menu" nzTheme="outline" nz-dropdown [nzDropdownMenu]="chartMenu"></i>
           <nz-dropdown-menu  #chartMenu="nzDropdownMenu">
             <ul nz-menu nzSelectable>
-              <li (click)="goEdit($event, 1);">
+              <li (click)="goEdit($event, item.Id);">
                 <i nz-icon nzType="edit" nzTheme="outline"></i>
-                <span>edit chart</span>
+                <span>Edit Card</span>
+              </li>
+              <li>
+                <span
+                  nz-popconfirm
+                  nzPopconfirmTitle="Are you sure you want to delete {{item.reportTitle}}"
+                  nzPopconfirmPlacement="bottom"
+                  [nzCancelText]="'CANCEL'"
+                  [nzOkText]="'CONFIRM'"
+                  (nzOnConfirm)="deleteCard(i, item.Id);"
+                >
+                <i nz-icon nzType="delete" nzTheme="outline"></i>
+                <span>Delete Card</span>
+                </span>
               </li>
             </ul>
           </nz-dropdown-menu>
         </div>
+      </div>
+      <div>
+        <app-widget-chart [data]="item.ReportDesignerData"></app-widget-chart>
       </div>
     </div>
   </div>

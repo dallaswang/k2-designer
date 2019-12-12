@@ -9,8 +9,7 @@ export class ChartComponent implements OnInit, OnChanges {
   @Input() data;
   @Input() chartType;
   @Input() options;
-  @Input() x;
-  @Input() y;
+  @Input() xy;
   @Output() chartChange = new EventEmitter();
   nvdOptions;
   nvdData;
@@ -28,20 +27,44 @@ export class ChartComponent implements OnInit, OnChanges {
   }
   generateChartData() {
     this.nvdData = this.applyChartData(this.data);
-    console.log(this.nvdData);
   }
   changeChart() {
     this.nvdOptions = this.applyChartOptions();
-    console.log(this.nvdOptions);
+    Object.assign(this.nvdOptions.chart, this.options);
   }
 
   parseAxises() {
     var axises = [{
-      x: this.x,
-      y: this.y
+      x: this.xy[0],
+      y: this.xy[1]
     }];
     return axises;
   }
+
+  parseSunAxises () {
+    let axises = this.xy.map((item, index) => {
+      const o = {
+        x: item,
+        y: this.xy[0]
+      }
+      return o;
+    });
+    return axises;
+  }
+
+  parseOhlcAxises() {
+    const o = {};
+    this.xy.forEach((item, index) => {
+      o[index] = item.name;
+    });
+
+    const axises = [{
+      x: o,
+      y: {}
+    }];
+    return axises;
+  }
+
   getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -1473,8 +1496,7 @@ export class ChartComponent implements OnInit, OnChanges {
         !axis.y ||
         !axis.y.name ||
         !axis.y.hasOwnProperty('op')) {
-        values = sourceData
-          .map((item) => {
+        values = sourceData.map((item) => {
             return {
               key: axis.x && axis.x.name ? item[axis.x.name] : null,
               y: axis.y && axis.y.name ? item[axis.y.name] : null,
@@ -1591,7 +1613,7 @@ export class ChartComponent implements OnInit, OnChanges {
     return data;
   }
   applySunburstData(sourceData) {
-    var axises = this.parseAxises();
+    var axises = this.parseSunAxises();
     var data = [];
 
     function getData(data, axises) {
@@ -1993,19 +2015,18 @@ export class ChartComponent implements OnInit, OnChanges {
     return data;
   }
   applyOhlcBarData(sourceData) {
-    var axises = this.parseAxises();
+    var axises = this.parseOhlcAxises();
     var data = [];
     axises.forEach((axis) => {
       var values;
       values = sourceData
         .map((item) => {
           return {
-            'date': new Date(item[axis.x['designDate']]).getTime(),
-            'open': parseFloat(item[axis.x['designOpen']]),
-            'high': parseFloat(item[axis.x['designHigh']]),
-            'low': parseFloat(item[axis.x['designLow']]),
-            'close': parseFloat(item[axis.x['designClose']]),
-            'volume': item[axis.x['designVolume']]
+            'date': new Date(item[axis.x[0]]).getTime(),
+            'high': parseFloat(item[axis.x[1]]),
+            'low': parseFloat(item[axis.x[2]]),
+            'open': parseFloat(item[axis.x[3]]),
+            'close': parseFloat(item[axis.x[4]]),
           };
         })
       var o = {
@@ -2017,7 +2038,6 @@ export class ChartComponent implements OnInit, OnChanges {
   }
   applyBoxPlotData(sourceData) {
     var axises = this.parseAxises();
-    var data = [];
     var calcQ1 = function (arr) {
       var len = arr.length;
       var position = (len + 1) / 4;
@@ -2105,7 +2125,7 @@ export class ChartComponent implements OnInit, OnChanges {
       }
       return data;
     }
-    data = getBoxPlotData(sourceData);
+    let data = getBoxPlotData(sourceData);
     return data;
   }
   applyForceDirectedData(sourceData) {
